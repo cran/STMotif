@@ -1,0 +1,124 @@
+---
+title: "Applied process"
+author: "Amin Bazaz, Heraldo Borges, Eduardo Ogasawara"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example with a sample dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+This documentation is intended to present the outputs of a sample dataset.
+
+```{r, echo=FALSE}
+source(file = "../R/mainFunction.R")
+source(file = "../R/subFunction.R")
+source(file = "../R/visualization.R")
+library(foreach)
+library(stats)
+library(ggplot2)
+library(reshape2)
+```
+
+### Launch the workflow to find the motifs
+
+The workflow consists of 3 steps described in the main package documentation.
+These 3 steps will be applied on our sample.
+
+ 1. The function `STSIdentifyCandidateSTMotifs` allows to generate the candidates :
+
+```{r, echo=TRUE}
+
+# The process is launched on the provided example dataset
+dim(STMotif::example_dataset)
+
+
+# Generation of candidates
+candidates <- STSIdentifyCandidateSTMotifs(data = STMotif::example_dataset, tslice = 25, sslice = 10, alpha = 7, window_size = 3)
+
+
+# Information of the block 1
+# The motifs built in numeric values
+head(candidates$motifs[[1]]$Subs)[1:3,]
+
+# The motifs built in encoded values
+head(candidates$motifs[[1]]$Subs.SAX)[1:3,]
+
+# Grouping identical motifs in numeric values
+head(candidates$motifs[[1]]$Motif.raw)[1:3]
+
+# Grouping identical motifs in encoded values
+head(candidates$motifs[[1]]$Motif.SAX)[1:3]
+
+# Grouping with the starting position of identical motifs in the combined series
+head(candidates$motifs[[1]]$Indices)[1:3]
+
+
+# Number of blocks in row and column
+c(candidates$nrows,candidates$ncols)
+
+
+# Position of the block 1 into the original dataset
+candidates$rectangles[[1]]
+
+# Values of block 1
+head(candidates$blocks$datasets[[1]])[1:3,]
+
+
+# Encoded values of block 1
+head(candidates$saxblocks$datasets[[1]])[1:3,]
+```
+ 
+
+ 2. The functions `STSIdentifySTMotifs` and `STSIdentifyTightSTMotifs` allows to check and filter the candidates :
+ 
+```{r, echo=TRUE}
+stmotifs <- STSIdentifySTMotifs(candidates = candidates, ka = 1, si = 1)
+
+# Ouput of the first selected motif
+stmotifs[[1]]
+``` 
+```{r, echo=TRUE}
+sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs = stmotifs, rectangles = candidates$rectangles)
+
+# Ouput of the first motif
+sttightmotifs[[1]]
+``` 
+ 
+ 3. The function `STSRankTightSTMotifs` allows to rank the selected motifs by their quality :
+ 
+```{r, echo=TRUE}
+ranksttightmotifs <- STSRankTightSTMotifs(sttightmotifs = sttightmotifs)
+
+# Motif with the better quality
+ranksttightmotifs[[1]]
+```
+
+
+### Plot the result
+
+The function `runVisualization` allows to launch an interactive interface to visualize the result.
+There is 2 ways to visualize the result.
+
+- Plot the intensity of values and highlight one motifs or the top 5
+
+```{r fig, fig.height = 4, fig.width = 6, fig.align = "center"}
+# Plot the intensity of the dataset and highlight one selected motifs
+intensityDataset(dataset = STMotif::example_dataset,rankList = ranksttightmotifs,rank = 1,alpha = 7)
+```
+
+- Plot the spatial-time series by select a range of columns in the dataset and highlight one motifs
+
+```{r fig1, fig.height = 4, fig.width = 6, fig.align = "center"}
+# Plot of 5 specific spatial series which some of them contain the best motif.
+displayPlotSeries(dataset = STMotif::example_dataset, rankList = ranksttightmotifs ,rank = 1 ,space = c(1,2,5:7))
+```

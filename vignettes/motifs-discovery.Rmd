@@ -1,0 +1,98 @@
+---
+title: "Motifs discovery into spatial time series"
+author: "Amin Bazaz, Heraldo Borges, Eduardo Ogasawara"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Motifs discovery into spatial time series}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This package `STSMotifs` allows to perform a research of motif into spatial time series. The main purpose is to find a way to handle the issue of large amouts of data. The package offers a way to do this research quickly and efficiently.
+To find the motifs, the `Combined Series Approach (CSA)` is used.
+The process is decomposed by several steps :
+
+1. generation of candidates
+2. Check and filter the candidates by some tresholds
+3. rank the selected candidates
+
+## Input
+To use functions of this package, some inputs are needed. The quality of outputs depends strongly by these parameters, the user has to pay attention.
+
+* `dataset` : Dataframe which contains numerics values
+    
+The dataset contain only numerics values. Columns represent the space and rows the time.
+```{r, echo=FALSE}
+head(STMotif::example_dataset[,1:10])
+```
+* `alpha` : The number of letters to do the encode of numerics values
+
+* `window_size` : The lengths of the motifs
+
+* `tslice` and `sslice` : Allows you to control the shape of the blocks
+
+A part of the process is applied into blocks (subset of the original dataset). 
+With the tslice ("Time slice" number of rows in each block) and sslice ("Space slice" number of columns in each block), the user can specify a block shape (vertical rectangle, square or horizontal rectangle).
+
+* `kappa` and `sigma` : Thresholds to check the quality of each motif
+
+Kappa (Spacial Occurence) represents the minimal number of motif occurences in the different columns.
+Sigma (Global Occurence) represents the minimal number of motif occurences in the throughout the dataset.
+
+## Description of each step
+
+### Generation of candidates
+
+This step create blocks. After that, all this process is adapted in a single time series. Thereby each columns of the block are combined to create a single big time series.
+The output of this step are information about each blocks :
+
+* sub dataset
+* sub dataset encoded
+* motifs discover into the block
+* motifs discover encoded
+* position of corners of the block
+* start position of each similar motifs
+
+### Treatment of candidates
+
+This step requires the candidates and the kappa and sigma thresholds.
+All information about motifs are extracted and manipulated At the end, the motifs that passed the restriction of the 2 thresholds are stored into a list of motif. Each pattern has as information : 
+
+* the encoded sequence
+* the regions in which the motif is located
+* the coordinates of the starting positions of this motif into the original dataset.
+* the number of occurences (global and spacial)
+
+Once these motifs created, a filtering is applied.
+
+
+### Rank the selected patterns
+
+The previous step has created a list of motifs with all information about them.
+These motifs are ranked by their occurences.
+The ouput is the same as the previous step but a classification is added
+
+
+## Plot the result
+
+There is 3 ways to visualize the result.
+
+- Plot the intensity of values and highlight one motifs or the top 5
+
+- Plot the spatial-time series by select a range of columns in the dataset and highlight one motifs
+
+- Run an application to have an interactive interface to visualize the result
+    
+    
+## Example
+
+To see an example of output : [Output Example](example.html)
+
