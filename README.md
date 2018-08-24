@@ -1,6 +1,6 @@
 # STMotif
 
-The goal of STMotif is to perform a research of motif into spatial time series. The main purpose is to find a way to handle the issue of large amouts of data. The package offers a way to do this research quickly and efficiently.
+This package allows to identify motifs in spatial-time series. A motif is a previously unknown subsequence of a (spatial) time series with relevant number of occurrences. For this purpose, the Combined Series Approach (CSA) is used.
 
 # Author
 

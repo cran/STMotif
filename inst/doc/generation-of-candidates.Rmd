@@ -22,21 +22,21 @@ To do this, before applying the process, there is a step of preparing the datase
 
 ## Presentation of the process
 
-The process is composed by several steps :
+The process is composed by five steps:
 
 1. Normalization
 2. Symbolic Aggregation ApproXimation (SAX)
-3. Partitioning spatial-time series into blocks
-4. Combination of bloked spatial-time series
-5. Combined Series Approach
+3. Partitioning the spatial-time dataset into blocks
+4. Combination of spatial-time series in each block
+5. Generation of candidates
 
 
 ## Description of each step
 
-### Normalisation
+### Normalization
 
-This step is fundamental to ensure that the data is in the same scale / basis.
-To do this normalisation the method `Z-score` is used.
+This step is fundamental to ensure that the data is in the same scale/basis.
+To do this normalization the method `Z-score` is used.
 
 ```{r, echo=TRUE}
 head(STMotif::example_dataset[,1:10])
@@ -46,7 +46,7 @@ head(round(STSNormalization(vector = as.matrix(STMotif::example_dataset)),digits
 
 ### Symbolic Aggregation ApproXimation (SAX)
 
-The observations of subsequences trends to be normally distributed. Thereby, the discretization space is made over the Gaussian curve in different intervals with same probability.
+The observations of subsequences trends to be normally distributed. Thereby, the discretization space is made over the Gaussian curve in different intervals with the same probability.
 To encode values, we must give a number of letters in the alphabet.
 
 ```{r, echo=FALSE, fig.cap="SAX Encoding with 3 letters", out.width = '100%'}
@@ -55,22 +55,22 @@ knitr::include_graphics("saxencode.png")
 
 ### Partitioning spatial-time series into blocks
 
-This step divides the original dataset into blocks. To give a shape to the blocks, there are 2 parameters (Spatial Slice and Time Slice).
+This step divides the original dataset into blocks using the parameters Spatial Slice and Time Slice.
 
 ```{r, echo=FALSE, fig.cap="Blocks creation", out.width = '100%'}
 knitr::include_graphics("partitioningintoblocks.png")
 ```
 
-### Combination of bloked spatial-time series
+### Combination of spatial-time series in each block
 
-The goal of this step is to create time series from blocks.
-After this combination, the spatial-time series present in the block are transformed into time series. After that we can use existing tools to find the candidates.
+The goal of this step is to create a combined series from each block.
+After this combination, the spatial-time series present in the block are transformed into a combined series. 
 
-```{r, echo=FALSE, fig.cap="Combine the spatial-time series into the block", out.width = '100%'}
+```{r, echo=FALSE, fig.cap="Combine the spatial-time series into each block", out.width = '100%'}
 knitr::include_graphics("combineseries.png")
 ```
 
-### Combined Series Approach
+### Generation of candidates
 
 Now we can run the `motif discovery algorithm` and find the candidates.
 

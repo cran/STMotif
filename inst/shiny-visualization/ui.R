@@ -6,7 +6,7 @@ shinyUI(fluidPage(
   br(),
   fluidRow(
     column(12,
-           sliderInput("rank", "Choose the rank:",min = 1, max = ifelse(length(listMotifShiny)<1000, length(listMotifShiny), 1000), value = 1, step = 1, width = "auto")
+           sliderInput("rank", "Choose the rank:",min = 1, max = ifelse(length(listMotifShiny)<200, length(listMotifShiny), 200), value = 1, step = 1, width = "auto")
     )
   ),
   fluidRow(
@@ -18,7 +18,7 @@ shinyUI(fluidPage(
   br(),
   fluidRow(
     column(12,
-           sliderInput("rank2", "Choose the rank:",min = 1, max = ifelse(length(listMotifShiny)<1000, length(listMotifShiny), 1000), value = 1, step = 1, width = "auto")
+           sliderInput("rank2", "Choose the rank:",min = 1, max = ifelse(length(listMotifShiny)<200, length(listMotifShiny), 200), value = 1, step = 1, width = "auto")
     ),
     column(12,
            sliderInput("range", label = "Choose a range of columns", min = 1,  max = ncol(datasetShiny), value = c(1, 10), step = 1, width = "auto")

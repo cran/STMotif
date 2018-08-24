@@ -7,26 +7,26 @@
 STSIdentifySTMotifs(candidates, ka = 1, si = 1)
 }
 \arguments{
-\item{candidates}{List which contains the discovered motifs}
+\item{candidates}{List which contains the discovered candidates}
 
 \item{ka}{Support for Spatial Occurrence (SO)}
 
 \item{si}{Support of Global Occurrence (GO)}
 }
 \value{
-Return a list of motifs [Isaxcode, Recmatrix, Vectst] which past the tresholds sigma and kappa, each motif contains :
+Return a list of motifs [Isaxcode, Recmatrix, Vectst] which past the tresholds sigma and kappa. Each motif contains:
 
-Isaxcode : Motif sequences in character format
+Isaxcode: Motif sequences in character format
 
-Recmatrix : Matrix giving as information the blocks containing this motif
+Recmatrix: Matrix giving as information the blocks containing this motif
 
-Vectst : Coordinate of the start positions of the motif in the original dataset
+Vectst: Coordinate of the start positions of the motif in the original dataset
 }
 \description{
-First step in controlling the quality of candidates
+First step in controlling the frequency of candidates
 }
 \note{
-To see how candidates are validated (see part 1) : \href{../inst/doc/check-candidates.html}{Validation of candidates}
+To see how candidates are validated (part 1): \href{../inst/doc/validate-candidates.html}{Validation of candidates}
 }
 \examples{
 #Generation of candidates

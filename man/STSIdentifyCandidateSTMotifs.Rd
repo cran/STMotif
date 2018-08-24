@@ -10,34 +10,32 @@ STSIdentifyCandidateSTMotifs(data, tslice, sslice, alpha = 7,
 \arguments{
 \item{data}{Dataset containing numeric values}
 
-\item{tslice}{"Time slice" Number of row in each block}
+\item{tslice}{"Time slice" Number of rows in each block}
 
-\item{sslice}{"Space slice" Number of column in each block}
+\item{sslice}{"Space slice" Number of columns in each block}
 
-\item{alpha}{Number of letter to do the encode}
+\item{alpha}{Number of letters to do the encode}
 
 \item{window_size}{Length of motifs}
 }
 \value{
-List [Motifs, Nrows, Ncols, Rectangles, Blocks, Saxblocks] cantining all information about the blocks : number of blocks in rows and columns, values of each block (numeric and encoded values) and information about frequent motifs in blocks.
+List [Motifs, Nrows, Ncols, Rectangles, Blocks, Saxblocks] containing all information about the blocks: number of blocks in horizontal and vertical, values of each block (numeric and SAX encoded) and information about frequent candidates in blocks
 
-Motifs : Contain for each block the Subs : data frame containing all the subsequences in original data frame, Subs.SAX : data frame containing all the subsequences in SAX representations, Motif.raw : a list showing the motifs discovered in the original data frame, Morif.SAX : a list showing the motifs discovered in SAX representations and Indices : a list showing the starting positions of subsequences for each motif discovered.
+Motifs: Contain for each block the Subs: dataframe containing all the subsequences in the original dataframe; Subs.SAX: a dataframe containing all the subsequences in SAX representations; Motif.raw: a list showing the candidates discovered in the original dataframe; Motif.SAX: a list showing the candidates discovered in SAX representations and Indices: a list showing the starting positions of subsequences for each candidate discovered.
 
-Nrows : Numeric value giving the number of row which delimited the blocks created
+Nrows and Ncols: Number of blocks in horizontal and vertical
 
-Ncols : Numeric value giving the number of column which delimited the blocks created
+Rectangles: For each block gives information about the position of the block into the original dataset
 
-Rectangles : For each block gives information about the position of the block into the orginal dataset
+Blocks: Contains the values of each block
 
-Blocks : Contains the values of each blocks and the nrows and ncols
-
-Saxblocks : Contains the values encoded bay SAX of each blocks and the nrows and ncols
+Saxblocks: Contains the values encoded by SAX of each block
 }
 \description{
-Find frequent motifs in a dataset
+Find frequent candidates in a dataset
 }
 \note{
-To see all the stages of the generation of candidates : \href{../inst/doc/generation-of-candidates.html}{Generation of candidates}
+To see all the stages of the generation of candidates: \href{../inst/doc/generation-of-candidates.html}{Generation of candidates}
 }
 \examples{
 #Generation of candidates

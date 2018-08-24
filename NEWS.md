@@ -1,3 +1,8 @@
+# STMotif 0.1.1
+
+* Improvements of the documentation.
+* Fix the plot function
+
 # STMotif 0.1.0
 
 * Fist version of the STMotif package.

@@ -11,7 +11,7 @@ runVisualization(dataset, rankList, alpha)
 
 \item{rankList}{List of ranked motifs}
 
-\item{alpha}{Number of letter used to do the encode}
+\item{alpha}{Number of letters used to do the encode}
 }
 \description{
 Launch a process to have an interactive visualization
@@ -22,9 +22,9 @@ Launch a process to have an interactive visualization
 candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-rank <- STSRankTightSTMotifs(sttightmotifs)
+rankResult <- STSRankTightSTMotifs(sttightmotifs)
 
 #Launch the process
-runVisualization(dataset = STMotif::example_dataset, rank, 7)
+runVisualization(dataset = STMotif::example_dataset, rankResult, 7)
 }
 }

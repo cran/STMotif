@@ -11,21 +11,21 @@ top5motifs(dataset, rankList, alpha)
 
 \item{rankList}{List of ranked motifs}
 
-\item{alpha}{Number of letter used to do the encode}
+\item{alpha}{Number of letters used to do the encode}
 }
 \value{
 Pixelated dataset
 }
 \description{
-Display the intensity of values and higthlight the top 5 motifs
+Display the intensity of values and higthlight the top five motifs
 }
 \examples{
 #Launch all the workflow
 candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-rank <- STSRankTightSTMotifs(sttightmotifs)
+rankResult <- STSRankTightSTMotifs(sttightmotifs)
 
 #Plot the result
-top5motifs(dataset = STMotif::example_dataset, rankList = rank, alpha = 7)
+top5motifs(dataset = STMotif::example_dataset, rankList = rankResult, alpha = 7)
 }

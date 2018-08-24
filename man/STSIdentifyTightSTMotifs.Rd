@@ -12,27 +12,27 @@ STSIdentifyTightSTMotifs(stmotifs, rectangles)
 \item{rectangles}{Information about the position of all blocks into the orginal dataset}
 }
 \value{
-Return a list of motifs [Isaxcode, Recmatrix, Vectst, SOtight, GOtight, SO, GO] which past the fliter, each motif contrains :
+Return a list of motifs [Isaxcode, Recmatrix, Vectst, SOtight, GOtight, SO, GO] which past the fliter, each motif contrains:
 
-Isaxcode : Motif sequences in character format
+Isaxcode: Motif sequences in character format
 
-Recmatrix : Matrix giving as information the blocks containing this motif
+Recmatrix: Matrix giving as information the blocks containing this motif
 
-Vectst : Coordinate of the start positions of the motif in the original dataset
+Vectst: Coordinate of the start positions of the motif in the original dataset
 
-SOtight : Spatial Occurrences after removing outliers
+SO: Spatial Occurrences before removing isolated motifs
 
-GOtight : Global Occurrences after removing outliers
+GO: Global Occurrences before removing isolated motifs
 
-SO : Spatial Occurrences before removing outliers
+SOtight: Spatial Occurrences after removing isolated motifs
 
-GO : Global Occurrences before removing outliers
+GOtight: Global Occurrences after removing isolated motifs
 }
 \description{
-Using the cluster to remove isolated motifs for each seleted motifs and after that recheck the global and spatial occurences.
+Using the cluster to remove isolated motifs for each seleted motifs and after that, recheck the global and spatial occurences.
 }
 \note{
-To see how motifs are filtered (see part 2) : \href{../inst/doc/check-candidates.html}{Motifs filtering}
+To see how motifs are filtered (part 2): \href{../inst/doc/validate-candidates.html}{Filter motifs}
 }
 \examples{
 #Generation of candidates

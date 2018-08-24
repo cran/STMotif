@@ -4,14 +4,14 @@
 \alias{intensityDataset}
 \title{Plot the intensity of values}
 \usage{
-intensityDataset(dataset, rankList, rank, alpha)
+intensityDataset(dataset, rankList, position, alpha)
 }
 \arguments{
 \item{dataset}{Dataset containing numeric values}
 
 \item{rankList}{List of ranked motifs}
 
-\item{rank}{Select by an integer a motif with his rank}
+\item{position}{Select by an integer a motif with his position}
 
 \item{alpha}{Number of letter used to do the encode}
 }
@@ -26,8 +26,8 @@ Display the intensity of values and higthlight one motif
 candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-rank <- STSRankTightSTMotifs(sttightmotifs)
+rankResult <- STSRankTightSTMotifs(sttightmotifs)
 
 #Plot the result
-intensityDataset(dataset = STMotif::example_dataset, rank, 1, 7)
+intensityDataset(dataset = STMotif::example_dataset, rankResult, 1, 7)
 }

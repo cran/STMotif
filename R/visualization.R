@@ -3,8 +3,8 @@
 #' Plot a selected motif and range of columns of the dataset
 #' @param dataset Dataset containing numeric values
 #' @param rankList List of ranked motifs
-#' @param rank Select by an integer a motif with his rank
-#' @param space Select a range of columns to plot the corresponding spatiale series
+#' @param position Select by an integer a motif with his position
+#' @param space Select a range of columns to plot the corresponding spatial series
 #' @return Plot the spatial series
 #' @import ggplot2
 #' @import reshape2
@@ -13,12 +13,12 @@
 #'candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 #'stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 #'sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-#'rank <- STSRankTightSTMotifs(sttightmotifs)
+#'rankResult <- STSRankTightSTMotifs(sttightmotifs)
 #'
 #'#Plot the result
-#'displayPlotSeries(dataset = STMotif::example_dataset, rank, 1, 2:11)
+#'displayPlotSeries(dataset = STMotif::example_dataset, rankResult, 1, 2:11)
 #' @export
-displayPlotSeries <- function(dataset, rankList, rank, space){
+displayPlotSeries <- function(dataset, rankList, position, space){
   size_motif <- length(rankList[[1]]$saxcod)
   namesCol <- paste("X",colnames(dataset),sep = "")
   data <- as.data.frame(dataset[,space])
@@ -27,9 +27,9 @@ displayPlotSeries <- function(dataset, rankList, rank, space){
   data <- reshape2::melt(data,id.vars = 1)
   data <- data.frame(data, color = "black")
   levels(data$color) <- c("black", "red")
-  for(i in 1:length(rankList[[rank]]$vecst$s)){
-    if(rankList[[rank]]$vecst$s[i]%in%space){
-      data[data$variable==namesCol[rankList[[rank]]$vecst$s[i]],][(rankList[[rank]]$vecst$t[i]):(rankList[[rank]]$vecst$t[i]+(size_motif-1)),4] <- "red"
+  for(i in 1:length(rankList[[position]]$vecst$s)){
+    if(rankList[[position]]$vecst$s[i]%in%space){
+      data[data$variable==namesCol[rankList[[position]]$vecst$s[i]],][(rankList[[position]]$vecst$t[i]):(rankList[[position]]$vecst$t[i]+(size_motif-1)),4] <- "red"
     }
   }
   plot.series(data[1:nrow(data),])
@@ -41,7 +41,7 @@ displayPlotSeries <- function(dataset, rankList, rank, space){
 #' Display the intensity of values and higthlight one motif
 #' @param dataset Dataset containing numeric values
 #' @param rankList List of ranked motifs
-#' @param rank Select by an integer a motif with his rank
+#' @param position Select by an integer a motif with his position
 #' @param alpha Number of letter used to do the encode
 #' @return Pixelated dataset
 #' @import ggplot2
@@ -53,12 +53,12 @@ displayPlotSeries <- function(dataset, rankList, rank, space){
 #'candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 #'stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 #'sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-#'rank <- STSRankTightSTMotifs(sttightmotifs)
+#'rankResult <- STSRankTightSTMotifs(sttightmotifs)
 #'
 #'#Plot the result
-#'intensityDataset(dataset = STMotif::example_dataset, rank, 1, 7)
+#'intensityDataset(dataset = STMotif::example_dataset, rankResult, 1, 7)
 #' @export
-intensityDataset <- function(dataset,rankList,rank,alpha){
+intensityDataset <- function(dataset,rankList,position,alpha){
   colorEncode <- 1:alpha
   datasetColor <- as.matrix(dataset)
   datasetColor <- as.vector(datasetColor)
@@ -70,8 +70,8 @@ intensityDataset <- function(dataset,rankList,rank,alpha){
   datasetColor$motif <- FALSE
   k <- 1
   line <- NULL
-  while(k<length(rankList[[rank]]$vecst$t)){
-    line[k] <- (rankList[[rank]]$vecst$t[k]*length(dataset[1,])-length(dataset[1,]))+(rankList[[rank]]$vecst$s[k])
+  while(k<length(rankList[[position]]$vecst$t)){
+    line[k] <- (rankList[[position]]$vecst$t[k]*length(dataset[1,])-length(dataset[1,]))+(rankList[[position]]$vecst$s[k])
     k <- k + 1
   }
   datasetColor[line,]$motif <- TRUE
@@ -79,8 +79,8 @@ intensityDataset <- function(dataset,rankList,rank,alpha){
     geom_raster() +
     scale_fill_gradientn(colours = c("white","dimgrey"), values = scales::rescale(1:alpha), limits=c(1,alpha))+
     geom_point(aes(size=ifelse(datasetColor$motif, "dot", "no_dot"),colour=ifelse(datasetColor$motif, "dot", "no_dot")), na.rm=T) +
-    scale_size_manual(values=c("dot"=4, "no_dot"=NA), guide="none") +
-    scale_colour_manual(name="", values = c("dot"="red", "no_dot"=NA),labels = c(paste("Motif",rank),"")) +
+    scale_size_manual(values=c("dot"=1, "no_dot"=NA), guide="none") +
+    scale_colour_manual(name="", values = c("dot"="red", "no_dot"=NA),labels = c(paste("Motif",position),"")) +
     theme_bw() +
     ggtitle("Intensity of values in the dataset") + xlab("Space") + ylab("Time") +
     guides(fill=guide_legend(title="SAX Encode")) + scale_y_reverse()
@@ -89,10 +89,10 @@ intensityDataset <- function(dataset,rankList,rank,alpha){
 
 #' Plot the 5 motifs
 #'
-#' Display the intensity of values and higthlight the top 5 motifs
+#' Display the intensity of values and higthlight the top five motifs
 #' @param dataset Dataset containing numeric values
 #' @param rankList List of ranked motifs
-#' @param alpha Number of letter used to do the encode
+#' @param alpha Number of letters used to do the encode
 #' @return Pixelated dataset
 #' @import ggplot2
 #' @import reshape2
@@ -103,10 +103,10 @@ intensityDataset <- function(dataset,rankList,rank,alpha){
 #'candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 #'stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 #'sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-#'rank <- STSRankTightSTMotifs(sttightmotifs)
+#'rankResult <- STSRankTightSTMotifs(sttightmotifs)
 #'
 #'#Plot the result
-#'top5motifs(dataset = STMotif::example_dataset, rankList = rank, alpha = 7)
+#'top5motifs(dataset = STMotif::example_dataset, rankList = rankResult, alpha = 7)
 #' @export
 top5motifs <- function(dataset,rankList,alpha){
   colorEncode <- 1:alpha
@@ -137,7 +137,7 @@ top5motifs <- function(dataset,rankList,alpha){
     geom_point(aes(size=ifelse(datasetColor$motif == 4, "dot4", "no_dot4"),colour=ifelse(datasetColor$motif == 4, "dot4", "no_dot4")), na.rm=T) +
     geom_point(aes(size=ifelse(datasetColor$motif == 5, "dot5", "no_dot5"),colour=ifelse(datasetColor$motif == 5, "dot5", "no_dot5")), na.rm=T) +
     scale_colour_manual(name="", values = c("dot1"="yellow", "dot2"="red", "dot3"="orange", "dot4"="blue", "dot5"="green", "no_dot1"=NA,"no_dot2"=NA,"no_dot3"=NA,"no_dot4"=NA,"no_dot5"=NA),labels = c('Motif1','Motif2','Motif3','Motif4','Motif5','','','','',''))+
-    scale_size_manual(values=c("dot1"=4, "dot2"=4, "dot3"=4, "dot4"=4, "dot5"=4, "no_dot1"=NA,"no_dot2"=NA,"no_dot3"=NA,"no_dot4"=NA,"no_dot5"=NA), guide="none") +
+    scale_size_manual(values=c("dot1"=1, "dot2"=1, "dot3"=1, "dot4"=1, "dot5"=1, "no_dot1"=NA,"no_dot2"=NA,"no_dot3"=NA,"no_dot4"=NA,"no_dot5"=NA), guide="none") +
     theme_bw() +
     ggtitle("Intensity of values in the dataset") + xlab("Space") + ylab("Time") +
     guides(fill=guide_legend(title="SAX Encode")) + scale_y_reverse()
@@ -149,7 +149,7 @@ top5motifs <- function(dataset,rankList,alpha){
 #' Launch a process to have an interactive visualization
 #' @param dataset Dataset containing numeric values
 #' @param rankList List of ranked motifs
-#' @param alpha Number of letter used to do the encode
+#' @param alpha Number of letters used to do the encode
 #' @import shiny
 #' @import utils
 #' @examples
@@ -158,10 +158,10 @@ top5motifs <- function(dataset,rankList,alpha){
 #'candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 #'stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 #'sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-#'rank <- STSRankTightSTMotifs(sttightmotifs)
+#'rankResult <- STSRankTightSTMotifs(sttightmotifs)
 #'
 #'#Launch the process
-#'runVisualization(dataset = STMotif::example_dataset, rank, 7)
+#'runVisualization(dataset = STMotif::example_dataset, rankResult, 7)
 #'}
 #' @export
 runVisualization <- function(dataset, rankList, alpha){

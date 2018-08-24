@@ -7,7 +7,7 @@
 STSRankTightSTMotifs(sttightmotifs)
 }
 \arguments{
-\item{sttightmotifs}{List of motifs selected motifs}
+\item{sttightmotifs}{List of motifs after removing isolated motifs}
 }
 \value{
 The ranked version of the list provided as input.
@@ -22,9 +22,9 @@ candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 
 #Filter the selected motifs by their occurences
 stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 
-#Remove the outliers
+#Remove the isolated motifs
 sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
 
-#Ranking of the result
+#Order the result list
 rank <- STSRankTightSTMotifs(sttightmotifs)
 }

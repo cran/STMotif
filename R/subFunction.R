@@ -15,7 +15,7 @@ STSNormalization <- function (vector){
   return ((vector-mean(vector, na.rm = T))/sd(vector, na.rm = T))
 }
 
-# binning the time series
+# binning the dataset
 # Build an encode for the values
 binning <- function(v, alpha) {
   p <- seq(from = 0, to = 1, by = 1/alpha)
@@ -71,8 +71,8 @@ STSComputeBlocks <- function(dataset, tslice, sslice) {
 }
 
 
-# Generate candidates into a block
-# Take a block and discover the frequent motifs
+# Generate candidates from a block
+# Take a block and discover the frequent candidates
 identifyMotifsInBlock <- function(ts, tss, window.size, sslice , a, overlap = 0) {
   #Normalization
   ts.nor <- STSNormalization(ts)
@@ -101,18 +101,18 @@ identifyMotifsInBlock <- function(ts, tss, window.size, sslice , a, overlap = 0)
   colnames(ts.sax) <- c("StartPosition", 1:window.size)
   ts.sax$StartPosition <- as.numeric(ts.sax$StartPosition)
 
-  #Creating a motif list with a list of starpPosition of the same motifs
+  #Creating a candidate list with a list of starpPosition of the same motifs
   i = j <- 1
   indices <- list()
   for (i in 1:nrow(ts.sax)){
     saxCandidate <- paste(ts.sax[i,-1], collapse = "")
     indices[[saxCandidate]] <- c(indices[[saxCandidate]],ts.sax[i,1])
   }
-  while (j <= length(indices)){ #removing the motifs with just 1 or less candidate
+  while (j <= length(indices)){ #removing the candidate with just 1 or less candidate
     if(length(indices[[j]])<=1){indices[[j]]<-NULL}else{j<-j+1}
   }
 
-  if(length(indices)>0){ #Check if there is repeated motifs found into the block
+  if(length(indices)>0){ #Check if there is repeated candidate found into the block
     #Create the output motif.sax
     #Each identical sequence is grouping to create a sub matrix of ts.sax
     motif.sax <- foreach::foreach(i = 1:length(indices)) %do% {
@@ -149,10 +149,10 @@ STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si)
   recMatrix = matrix(rep(0, nrows*ncols), nrow = nrows, ncol = ncols)
   tslice <- eT - sT + 1
   sslice <- eS - sS + 1
-  #for each motif discoverd inside the block
-  if(length(motif$Indices)>0){ #Check if there is repeated motifs found into the block
+  #for candidate motif discoverd inside the block
+  if(length(motif$Indices)>0){ #Check if there is repeated candidate found into the block
     for(a in 1:length(motif$Indices)){
-      #vectorize the indices of the motif
+      #vectorize the indices of the candidate
       vec <- motif$Indices[[a]]
 
       #check if the GO(motif[a] >= sigma)
@@ -160,9 +160,9 @@ STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si)
         #scount: vector of 0 with the slice columns
         scount <- rep(0, sslice)
 
-        #for each occurence of the motif
+        #for each occurence of the candidate
         for(z in 1: length(vec)) {
-          #mark each column wich contains the motif
+          #mark each column wich contains the candidate
           i <- as.integer(vec[z] / tslice) + 1
           scount[i] <- 1
         }
@@ -172,7 +172,7 @@ STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si)
 
         #check if the SO(motif[a] >= kapa)
         if(count >= ka) {
-          #take the SAX of the motif
+          #take the SAX of the candidate
           saxcod <- motif$Motif.SAX[[a]][1,2:(length(motif$Subs.SAX))]
           isaxcod <- paste(saxcod, collapse = "")
 
@@ -201,7 +201,7 @@ STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si)
 }
 
 # Handle one motif
-# Remove the outliers
+# Remove the isolated motifs
 STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
   #We selected one motif with its information
   tight <- list()
@@ -270,7 +270,7 @@ plot.series <- function(series, label_series = "", label_x = "", label_y = "") {
   grf <- grf + scale_colour_identity(series$color) + geom_line() + geom_point(data=series, aes(x = series$x, y = series$value), size=0.5) + facet_grid(variable ~ .)
   grf <- grf + xlab(label_x)
   grf <- grf + ylab(label_y)
-  grf <- grf + ggtitle("Motifs into time series")
+  grf <- grf + ggtitle("Motifs in spatial-time series")
   grf <- grf + theme_bw(base_size = 10)
   grf <- grf + theme(panel.grid.major = element_blank()) + theme(panel.grid.minor = element_blank())
   grf <- grf + theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())

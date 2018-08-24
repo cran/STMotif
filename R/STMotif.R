@@ -1,8 +1,8 @@
 #' Package STMotif
 #'
-#'This package `STSMotifs` allows to perform a research of motif into spatial time series. The main purpose is to find a way to handle the issue of large amouts of data. The package offers a way to do this research quickly and efficiently.
+#'This package `STSMotifs` allows to identify motifs in spatial-time series. A motif is a previously unknown subsequence of a (spatial) time series with relevant number of occurrences. For this purpose, the Combined Series Approach (CSA) is used.
 #'
-#'To have more information about the package : \href{../doc/motifs-discovery.html}{PACKAGE STMOTIF}
+#'To have more information about the package : \href{../doc/discovery-motifs.html}{PACKAGE STMOTIF}
 #'@docType package
 #'@name STMotif
 NULL

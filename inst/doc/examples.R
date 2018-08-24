@@ -24,23 +24,23 @@ candidates <- STSIdentifyCandidateSTMotifs(data = STMotif::example_dataset, tsli
 
 
 # Information of the block 1
-# The motifs built in numeric values
+# The candidates built 
 head(candidates$motifs[[1]]$Subs)[1:3,]
 
-# The motifs built in encoded values
+# The candidates built with SAX
 head(candidates$motifs[[1]]$Subs.SAX)[1:3,]
 
-# Grouping identical motifs in numeric values
+# Grouping identical candidates 
 head(candidates$motifs[[1]]$Motif.raw)[1:3]
 
-# Grouping identical motifs in encoded values
+# Grouping identical motifs with SAX
 head(candidates$motifs[[1]]$Motif.SAX)[1:3]
 
-# Grouping with the starting position of identical motifs in the combined series
+# Grouping the starting position of identical candidates in the combined series
 head(candidates$motifs[[1]]$Indices)[1:3]
 
 
-# Number of blocks in row and column
+# Number of blocks in horizontal and vertical
 c(candidates$nrows,candidates$ncols)
 
 
@@ -57,13 +57,13 @@ head(candidates$saxblocks$datasets[[1]])[1:3,]
 ## ---- echo=TRUE----------------------------------------------------------
 stmotifs <- STSIdentifySTMotifs(candidates = candidates, ka = 1, si = 1)
 
-# Ouput of the first selected motif
+# Output of the first selected motif
 stmotifs[[1]]
 
 ## ---- echo=TRUE----------------------------------------------------------
 sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs = stmotifs, rectangles = candidates$rectangles)
 
-# Ouput of the first motif
+# Output of the first motif after removing the isolated
 sttightmotifs[[1]]
 
 ## ---- echo=TRUE----------------------------------------------------------
@@ -73,10 +73,10 @@ ranksttightmotifs <- STSRankTightSTMotifs(sttightmotifs = sttightmotifs)
 ranksttightmotifs[[1]]
 
 ## ----fig, fig.height = 4, fig.width = 6, fig.align = "center"------------
-# Plot the intensity of the dataset and highlight one selected motifs
-intensityDataset(dataset = STMotif::example_dataset,rankList = ranksttightmotifs,rank = 1,alpha = 7)
+# Plot the intensity of the dataset and highlight one selected motif
+intensityDataset(dataset = STMotif::example_dataset,rankList = ranksttightmotifs,position = 1,alpha = 7)
 
 ## ----fig1, fig.height = 4, fig.width = 6, fig.align = "center"-----------
-# Plot of 5 specific spatial series which some of them contain the best motif.
-displayPlotSeries(dataset = STMotif::example_dataset, rankList = ranksttightmotifs ,rank = 1 ,space = c(1,2,5:7))
+# Plot five specific spatial-series which some of them contain the best motif
+displayPlotSeries(dataset = STMotif::example_dataset, rankList = ranksttightmotifs ,position = 1 ,space = c(1,2,5:7))
 

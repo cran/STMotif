@@ -4,16 +4,16 @@
 \alias{displayPlotSeries}
 \title{Plot spatial series by selected columns}
 \usage{
-displayPlotSeries(dataset, rankList, rank, space)
+displayPlotSeries(dataset, rankList, position, space)
 }
 \arguments{
 \item{dataset}{Dataset containing numeric values}
 
 \item{rankList}{List of ranked motifs}
 
-\item{rank}{Select by an integer a motif with his rank}
+\item{position}{Select by an integer a motif with his position}
 
-\item{space}{Select a range of columns to plot the corresponding spatiale series}
+\item{space}{Select a range of columns to plot the corresponding spatial series}
 }
 \value{
 Plot the spatial series
@@ -26,8 +26,8 @@ Plot a selected motif and range of columns of the dataset
 candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
 stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
 sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-rank <- STSRankTightSTMotifs(sttightmotifs)
+rankResult <- STSRankTightSTMotifs(sttightmotifs)
 
 #Plot the result
-displayPlotSeries(dataset = STMotif::example_dataset, rank, 1, 2:11)
+displayPlotSeries(dataset = STMotif::example_dataset, rankResult, 1, 2:11)
 }

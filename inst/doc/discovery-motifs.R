@@ -5,5 +5,7 @@ knitr::opts_chunk$set(
 )
 
 ## ---- echo=FALSE---------------------------------------------------------
-head(STMotif::example_dataset[,1:10])
+data <- STMotif::example_dataset[,1:10]
+rownames(data) <- c()
+head(data)
 

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Amin Bazaz, Heraldo Borges, Eduardo Ogasawara" />
+
+<meta name="date" content="2018-08-23" />
+
+<title>Motifs discovery in spatial-time series</title>
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Motifs discovery in spatial-time series</h1>
+<h4 class="author"><em>Amin Bazaz, Heraldo Borges, Eduardo Ogasawara</em></h4>
+<h4 class="date"><em>2018-08-23</em></h4>
+
+
+
+<p>This package <code>STSMotifs</code> allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently. To find the motifs, the <code>Combined Series Approach (CSA)</code> is used. The process is decomposed by several steps :</p>
+<ol style="list-style-type: decimal">
+<li>Generation of candidates</li>
+<li>Treatment of candidates</li>
+<li>Rank the selected candidates</li>
+</ol>
+<div id="input" class="section level2">
+<h2>Input</h2>
+<p>To use functions of this package, some inputs are needed. The quality of outputs depends strongly by these parameters.</p>
+<ul>
+<li><code>dataset</code> : Dataframe which contains numerics values. Columns represent the space and rows the time.</li>
+</ul>
+<pre><code>#&gt;      1    2    3     4     5     6    7     8    9   10
+#&gt; 1  737 1350  869   750  1138   758 1006  1095   99  -83
+#&gt; 2  283  565  504   317  1849   944  -80  -895 -936  906
+#&gt; 3 -118 -375 -564  -803   870   472 -922 -1009 -698  741
+#&gt; 4 -696 -844 -654 -1303  -474  -591 -262  1034 1012  376
+#&gt; 5 -251 -622  -14  -587 -1108 -1401  404  1545 1696  247
+#&gt; 6  645  -10   -4   411  -858 -1261 -574  -329 -367 -680</code></pre>
+<ul>
+<li><p><code>alpha</code>: The size of the alphabet used to encode the numerical values into a string with SAX.</p></li>
+<li><p><code>window_size</code>: The size of the subsequences.</p></li>
+<li><p><code>tslice</code> and <code>sslice</code>: The size of the blocks.</p></li>
+</ul>
+<p>A part of the process is applied into blocks (subsets of the original dataset). With the tslice (“Time slice” number of rows in each block) and sslice (“Space slice” number of columns in each block), the user can specify the block size and the block shape.</p>
+<ul>
+<li><p><code>kappa</code> : Threshold to check the minimal number of <strong>spatial</strong> occurrences of each motif.</p></li>
+<li><p><code>sigma</code> : Threshold to check the minimal number of <strong>global</strong> occurrences of each motif.</p></li>
+</ul>
+</div>
+<div id="description-of-each-step" class="section level2">
+<h2>Description of each step</h2>
+<div id="generation-of-candidates" class="section level3">
+<h3>Generation of candidates</h3>
+<p>In this step, using tslice and sslice parameters, we create blocks from the original dataset. By using <strong>CSA</strong>, each column of the block are combined to create a single big series. The output of this step is described below.</p>
+<ul>
+<li>For each block:
+<ul>
+<li>sub dataset</li>
+<li>sub encoded dataset</li>
+<li>candidates found</li>
+<li>encoded candidates found</li>
+<li>position of the block</li>
+<li>start position of each similar candidate</li>
+</ul></li>
+</ul>
+<p>See more at <a href="generation-of-candidates.html">Generation of candidates</a></p>
+</div>
+<div id="treatment-of-candidates" class="section level3">
+<h3>Treatment of candidates</h3>
+<p>This step requires the candidates and the kappa and sigma thresholds. All the information about candidates are extracted and manipulated. In the end, the candidates that passed the restriction of the two thresholds are stored into a list of motifs. Each motif has as information:</p>
+<ul>
+<li>the encoded sequence</li>
+<li>the regions in which motif is located</li>
+<li>the coordinates of the starting positions of this motif into the original dataset</li>
+<li>the number of occurrences (global and spacial occurrences)</li>
+</ul>
+<p>See more at <a href="validate-candidates.html">Treatment of candidates</a></p>
+</div>
+<div id="rank-the-selected-candidates" class="section level3">
+<h3>Rank the selected candidates</h3>
+<p>The previous step has created a list of motifs with all information about them. These motifs are ranked by their global and spatial occurrences. The output is the same as the previous step but ordered.</p>
+</div>
+</div>
+<div id="plot-the-result" class="section level2">
+<h2>Plot the result</h2>
+<p>There are three ways to visualize the result:</p>
+<ul>
+<li><p>Plot the intensity of values and highlight one or the top five motifs.</p></li>
+<li><p>Plot the spatial-time series by selecting a range of columns in the dataset and highlight one motif.</p></li>
+<li><p>Run shiny application to have an interactive interface to visualize the result.</p></li>
+</ul>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>To see an example of output : <a href="examples.html">Output Example</a></p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
