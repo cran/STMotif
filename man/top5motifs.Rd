@@ -21,11 +21,10 @@ Display the intensity of values and higthlight the top five motifs
 }
 \examples{
 #Launch all the workflow
-candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
-stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
-sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-rankResult <- STSRankTightSTMotifs(sttightmotifs)
-
+D  <- STMotif::example_dataset
+DS <- NormSAX(STMotif::example_dataset,7)
+stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
+rstmotifs <- RankSTMotifs(stmotifs)
 #Plot the result
-top5motifs(dataset = STMotif::example_dataset, rankList = rankResult, alpha = 7)
+top5motifs(dataset = STMotif::example_dataset, rankList = rstmotifs, alpha = 7)
 }

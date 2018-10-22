@@ -23,11 +23,10 @@ Display the intensity of values and higthlight one motif
 }
 \examples{
 #Launch all the workflow
-candidates <- STSIdentifyCandidateSTMotifs(STMotif::example_dataset, 10, 10, 7, 3)
-stmotifs <- STSIdentifySTMotifs(candidates, 1, 1)
-sttightmotifs <- STSIdentifyTightSTMotifs(stmotifs, candidates$rectangles)
-rankResult <- STSRankTightSTMotifs(sttightmotifs)
-
 #Plot the result
-intensityDataset(dataset = STMotif::example_dataset, rankResult, 1, 7)
+D  <- STMotif::example_dataset
+DS <- NormSAX(STMotif::example_dataset,7)
+stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
+rstmotifs <- RankSTMotifs(stmotifs)
+intensityDataset(dataset = STMotif::example_dataset, rankList = rstmotifs, 1, 7)
 }

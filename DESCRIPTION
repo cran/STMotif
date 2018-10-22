@@ -1,7 +1,7 @@
 Package: STMotif
 Type: Package
 Title: Discovery of Motifs in Spatial-Time Series
-Version: 0.1.1
+Version: 1.0.0
 Authors@R: c(
     person("Amin", "Bazaz", role = c("aut"), comment = "Polytech'Montpellier"),
     person("Heraldo", "Borges", email = "stmotif@eic.cefet-rj.br", role = c("aut", "cre"), comment = "CEFET/RJ"),
@@ -11,15 +11,15 @@ Description: Allows to identify motifs in spatial-time series. A motif is a prev
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: foreach, stats, ggplot2, reshape2, scales, grDevices, shiny
+Imports: stats, ggplot2, reshape2, scales, grDevices, shiny
 RoxygenNote: 6.1.0
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-08-23 23:21:36 UTC; root
+Packaged: 2018-10-22 14:19:43 UTC; heraldoborges
 Author: Amin Bazaz [aut] (Polytech'Montpellier),
   Heraldo Borges [aut, cre] (CEFET/RJ),
   Eduardo Ogasawara [aut] (CEFET/RJ)
 Depends: R (>= 2.10)
 Repository: CRAN
-Date/Publication: 2018-08-24 09:14:35 UTC
+Date/Publication: 2018-10-22 15:10:03 UTC

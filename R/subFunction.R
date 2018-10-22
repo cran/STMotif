@@ -1,12 +1,14 @@
-# Adjust a block
-# Adjust the dimensions of a dataset to build the blocks
-STSAdjustBlock  <- function(dataset, tslice, sslice) {
-  c = ncol(dataset)
-  r = nrow(dataset)
-  ec = c %% sslice
-  er = r %% tslice
-  dataset = dataset[1:(r-er), 1:(c-ec)]
-  return (dataset)
+# binning the dataset
+# Build an encode for the values
+binning <- function(v, a) {
+  p <- seq(from = 0, to = 1, by = 1/a)
+  q <- quantile(v, p)
+  qf <- matrix(c(q[1:(length(q)-1)],q[2:(length(q))]), ncol=2)
+  vp <- cut(v, unique(q), FALSE, include.lowest=TRUE)
+  m <- tapply(v, vp, mean)
+  vm <- m[vp]
+  mse <- mean( (v - vm)^2, na.rm = TRUE)
+  return (list(binning=m, bins_factor=vp, q=q, qf=qf, bins=vm, mse=mse))
 }
 
 # Normalize the data
@@ -15,24 +17,13 @@ STSNormalization <- function (vector){
   return ((vector-mean(vector, na.rm = T))/sd(vector, na.rm = T))
 }
 
-# binning the dataset
-# Build an encode for the values
-binning <- function(v, alpha) {
-  p <- seq(from = 0, to = 1, by = 1/alpha)
-  q <- quantile(v, p)
-  qf <- matrix(c(q[1:(length(q)-1)],q[2:(length(q))]), ncol=2)
-  vp <- cut(v, q, FALSE, include.lowest=TRUE)
-  m <- tapply(v, vp, mean)
-  vm <- m[vp]
-  mse <- mean( (v - vm)^2, na.rm = TRUE)
-  return (list(binning=m, bins_factor=vp, q=q, qf=qf, bins=vm, mse=mse))
-}
+
 
 # Encode values
 # Encode numeric values from a vector
-STSSaxEncode <- function(dataset, vector, alpha) {
-  mybin <- binning(vector, alpha)
-  myletters <- letters[1:alpha]
+STSSaxEncode <- function(dataset, vector, a) {
+  mybin <- binning(vector, a)
+  myletters <- letters[1:a]
   saxvector <- myletters[mybin$bins_factor]
   saxvector = matrix(saxvector, nrow = nrow(dataset), ncol = ncol(dataset))
   saxvector = data.frame(saxvector)
@@ -42,23 +33,23 @@ STSSaxEncode <- function(dataset, vector, alpha) {
 
 # Compute blocks
 # Create blocks from the original dataset
-STSComputeBlocks <- function(dataset, tslice, sslice) {
+STSComputeBlocks <- function(dataset, tb, sb) {
   datasets <- list()
   rectangles <- list()
 
   c = ncol(dataset)
   r = nrow(dataset)
-  nc = c / sslice
-  nr = r / tslice
+  nc = c / sb
+  nr = r / tb
   i = 1
   j = 1
   n = 1
   for (i in 1:nc) {
-    sc = (i-1)*sslice + 1
-    ec = (i)*sslice
+    sc = (i-1)*sb + 1
+    ec = (i)*sb
     for (j in 1:nr) {
-      sr = (j-1)*tslice + 1
-      er = (j)*tslice
+      sr = (j-1)*tb + 1
+      er = (j)*tb
       ds = dataset[sr:er, sc:ec]
       datasets[[n]] = ds
       rect = c(sS = sc, eS = ec, sT = sr, eT = er, nr = j, nc = i)
@@ -71,118 +62,95 @@ STSComputeBlocks <- function(dataset, tslice, sslice) {
 }
 
 
-# Generate candidates from a block
-# Take a block and discover the frequent candidates
-identifyMotifsInBlock <- function(ts, tss, window.size, sslice , a, overlap = 0) {
-  #Normalization
-  ts.nor <- STSNormalization(ts)
-
-  #Calculate the increases value to the index (If overlap == 0): window.size
-  b <- ifelse(overlap==1, yes = 1, no = round((1-overlap)*window.size, digits = 0))
-
-  #Create a matrix with all the subsequences
-  ts.subs <- foreach::foreach(i=seq(from = 1, to = length(ts), by = b), .combine = rbind) %do% {
-    if(trunc(i/sslice)==trunc((i+window.size-1)/sslice)){ #Check if it's a fake motif
-      c(i,subs.temp <- ts.nor[i:(i+window.size-1)])
+# Generate motifs from a block
+# Take a block and discover the frequent motifs
+identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
+  #Generation all the possible subsequences
+  #ts.sax: a matrix with all the SAX subsequences
+  ts.sax <- NULL
+  for (i in 1:length(tss)){
+    if(floor((i-1)/tb)==floor((i-1+w-1)/tb)){ #Check if it's a fake motif
+      ts.sax  <- rbind(ts.sax ,c(i,tss[i:(i+w-1)]) )
     }
   }
-  ts.subs <- na.omit(ts.subs)
 
-  #Create a matrix with all the SAX subsequences
-  ts.sax <- foreach::foreach(i=seq(from = 1, to = length(tss), by = b), .combine = rbind) %do% {
-    if(trunc(i/sslice)==trunc((i+window.size-1)/sslice)){ #Check if it's a fake motif
-      c(i,sax.temp <- tss[i:(i+window.size-1)])
-    }
-  }
   ts.sax <- na.omit(ts.sax)
   ts.sax <- as.data.frame(ts.sax, stringsAsFactors = FALSE)
 
-  #give a name for each column. TD nmaybe give a name is not necessary
-  colnames(ts.sax) <- c("StartPosition", 1:window.size)
+  colnames(ts.sax) <- c("StartPosition", 1:w)
   ts.sax$StartPosition <- as.numeric(ts.sax$StartPosition)
 
-  #Creating a candidate list with a list of starpPosition of the same motifs
+  #Creating a list with a list of starpPosition of the same motifs
   i = j <- 1
   indices <- list()
   for (i in 1:nrow(ts.sax)){
-    saxCandidate <- paste(ts.sax[i,-1], collapse = "")
-    indices[[saxCandidate]] <- c(indices[[saxCandidate]],ts.sax[i,1])
+    saxMotif <- paste(ts.sax[i,-1], collapse = "")
+    indices[[saxMotif]] <- c(indices[[saxMotif]],ts.sax[i,1])
   }
-  while (j <= length(indices)){ #removing the candidate with just 1 or less candidate
+  while (j <= length(indices)){ #removing the motif with just 1 or less occurences
     if(length(indices[[j]])<=1){indices[[j]]<-NULL}else{j<-j+1}
   }
 
-  if(length(indices)>0){ #Check if there is repeated candidate found into the block
-    #Create the output motif.sax
-    #Each identical sequence is grouping to create a sub matrix of ts.sax
-    motif.sax <- foreach::foreach(i = 1:length(indices)) %do% {
-      ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
-    }
-    #Create the output motif.raw
-    #Each identical sequence is grouping to create a sub matrix of ts.sub
-    motif.raw <- foreach::foreach(i = 1:length(indices)) %do% {
-      ts.subs[which(ts.subs[,1] %in% indices[[i]]),]
-    }
-  }else{
-    motif.sax <- NULL
-    motif.raw <- NULL
+
+  #Each identical sequence is grouping to create a sub matrix of ts.sax
+  motif.sax <- NULL
+  for (i in 1:length(indices)){
+      motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
   }
 
-  return(list(Subs=ts.subs, Subs.SAX=ts.sax, Motif.raw=motif.raw, Motif.SAX=motif.sax, Indices=indices))
+  return(list(Subs.SAX=ts.sax, Motif.SAX=motif.sax, Indices=indices))
 }
 
 
-# Handle candidates
+# Handle motifs
 #
-# Handle candidates from one block
+# Handle motifs from one block
 STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si) {
   k <- length(stmotifs)
 
   #Get propreties of the block handled
-  sS = rectangle["sS"]
-  eS = rectangle["eS"]
-  sT = rectangle["sT"]
-  eT = rectangle["eT"]
-  nr = rectangle["nr"]
-  nc = rectangle["nc"]
+  sS = rectangle["sS"] #startSpatial
+  eS = rectangle["eS"] #endSpatial
+  sT = rectangle["sT"] #startTime
+  eT = rectangle["eT"] #endTime
+  nr = rectangle["nr"] #number of the row
+  nc = rectangle["nc"] #number of the column
 
   recMatrix = matrix(rep(0, nrows*ncols), nrow = nrows, ncol = ncols)
-  tslice <- eT - sT + 1
-  sslice <- eS - sS + 1
-  #for candidate motif discoverd inside the block
-  if(length(motif$Indices)>0){ #Check if there is repeated candidate found into the block
+  tb <- eT - sT + 1
+  sb <- eS - sS + 1
+  #for motif discoverd inside the block
+  if(length(motif$Indices)>0){ #Check if there is repeated motif found into the block
     for(a in 1:length(motif$Indices)){
-      #vectorize the indices of the candidate
+      #vectorize the indices of the motif
       vec <- motif$Indices[[a]]
 
-      #check if the GO(motif[a] >= sigma)
+      #BO - Block Occurrences validation
+      #check if the number of occurrences into the block is greater or equal to sigma
       if(length(vec) >= si) {
-        #scount: vector of 0 with the slice columns
-        scount <- rep(0, sslice)
+        #scount: vector of 0, with sb columns
+        scount <- rep(0, sb)
 
-        #for each occurence of the candidate
+        #for each occurence of the motif
         for(z in 1: length(vec)) {
-          #mark each column wich contains the candidate
-          i <- as.integer(vec[z] / tslice) + 1
+          #mark each column wich contains the motif
+          i <- as.integer(vec[z] / tb) + 1
           scount[i] <- 1
         }
-        #count SO
-        count <- sum(scount)
 
+        #BSO - Block Spatial Occurrences Validation
+        #check if the number of columns, into the block, which contains the motif is greater or equal to kappa
+        if(sum(scount) >= ka) {
+          #take the SAX of the motif
+          isaxcod <- paste(motif$Motif.SAX[[a]][1,2:(length(motif$Subs.SAX))], collapse = "")
 
-        #check if the SO(motif[a] >= kapa)
-        if(count >= ka) {
-          #take the SAX of the candidate
-          saxcod <- motif$Motif.SAX[[a]][1,2:(length(motif$Subs.SAX))]
-          isaxcod <- paste(saxcod, collapse = "")
+          vect <- as.integer(vec %% tb) + sT - 1
 
-          vect <- as.integer(vec %% tslice) + sT
-
-          vecs <- as.integer(vec / tslice) + sS
+          vecs <- as.integer(vec / tb) + sS
           i <- match(isaxcod, names(stmotifs))
           if (is.na(i)) {
             k = k + 1
-            stmotifs[[k]] <- list(saxcod=saxcod, isaxcod=isaxcod, vecs=vecs, vect=vect, recmatrix=recMatrix)
+            stmotifs[[k]] <- list(isaxcod=isaxcod, vecs=vecs, vect=vect, recmatrix=recMatrix)
             stmotifs[[k]]$recmatrix[nr, nc] = 1
             names(stmotifs)[k] = isaxcod
           }
@@ -193,8 +161,8 @@ STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si)
             list$vecs <- c(list$vecs, vecs)
             stmotifs[[i]] <- list
           }
-        }
-      }
+        }#Final Block Spatial Occurrences validation
+      }#Final Block Occurrences validation
     }
   }
   return (stmotifs)
@@ -208,7 +176,7 @@ STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
   mat <- stmotif$recmatrix #Get the recmatrix of one motif
   vecst <- stmotif$vecst #Get start position of the motif
   #For each block
-  for (i in 1:(nrow(mat)-1)) {
+  for (i in 1:nrow(mat)) {
     for (j in 1:(ncol(mat)-1)) {
       #Checking blocks neighbor if there is a presence of this motif
       if (mat[i,j] != 0) {
@@ -233,9 +201,9 @@ STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
   vec <- vec[vec > 0]
   vec <- unique(vec)
   k <- 1
-  SO = length(unique(vecst$s))
-  GO = nrow(vecst)
+  stmotif_org <- stmotif
   for (i in (vec)) {
+    stmotif <- stmotif_org
     stmotif$recmatrix[mat != i] <- 0
     stmotif$recmatrix[mat == i] <- k
     vecrects <- as.vector(stmotif$recmatrix)
@@ -251,12 +219,6 @@ STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
       conds = conds | (stmotif$vecst$s >= sS & stmotif$vecst$s <= eS & stmotif$vecst$t >= sT & stmotif$vecst$t <= eT)
     }
     stmotif$vecst <- stmotif$vecst[conds,]
-    stmotif$SOtight = length(unique(stmotif$vecst$s))
-    stmotif$GOtight = nrow(stmotif$vecst)
-    stmotif$SO = SO
-    stmotif$GO = GO
-    GO = nrow(vecst)
-
     tight[[k]] <- stmotif
     k <- k + 1
   }
@@ -270,9 +232,84 @@ plot.series <- function(series, label_series = "", label_x = "", label_y = "") {
   grf <- grf + scale_colour_identity(series$color) + geom_line() + geom_point(data=series, aes(x = series$x, y = series$value), size=0.5) + facet_grid(variable ~ .)
   grf <- grf + xlab(label_x)
   grf <- grf + ylab(label_y)
-  grf <- grf + ggtitle("Motifs in spatial-time series")
+  #grf <- grf + ggtitle("Motifs in spatial-time series")
   grf <- grf + theme_bw(base_size = 10)
   grf <- grf + theme(panel.grid.major = element_blank()) + theme(panel.grid.minor = element_blank())
   grf <- grf + theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
   return(grf)
+}
+
+
+comp_distance <- function(data) {
+  nv <- nrow(data)
+  na <- nrow(data)*(nrow(data)-1)/2
+
+  ver <- rep(FALSE, nv)
+  adj_mat <- matrix(0, nrow = na, ncol=3)
+  k <- 0
+  for (i in (1:(nv-1))) {
+    for (j in ((i+1):nv)) {
+      k <- k + 1
+      adj_mat[k, 1] <- i
+      adj_mat[k, 2] <- j
+      adj_mat[k, 3] <- sqrt((data$space[i]-data$space[j])^2+(data$time[i]-data$time[j])^2)
+    }
+  }
+  adj_mat <- data.frame(s = adj_mat[,1],d = adj_mat[,2], w = adj_mat[,3])
+  o <- order(adj_mat$w)
+  adj_mat <- adj_mat[o,]
+
+  edges <- NULL
+  for (k in 1:na) {
+    i <- adj_mat$s[k]
+    j <- adj_mat$d[k]
+    if (!ver[i] | !ver[j]) {
+      ver[i] <- TRUE
+      ver[j] <- TRUE
+      edges <- rbind(edges, adj_mat[k,])
+    }
+  }
+  return(1/mean(edges$w))
+}
+
+comp_word <- function(str) {
+  x <- strsplit(str, "^")
+  x <- x[[1]]
+  n <- length(x)
+  x <- table(x)
+  x <- x / n
+  y <- 0
+  for (i in 1:length(x)) {
+    y <- y - x[i]*log(x[i],2)
+
+  }
+  y <- y / (-log(1/n,2))
+  return(y)
+}
+
+
+rank_distance_word <- function(dataRank,stmotifs)
+{
+  dataRankOrg <- dataRank
+  minmax = data.frame(t(sapply(dataRank, max, na.rm=TRUE)))
+  minmax = rbind(minmax, t(sapply(dataRank, min, na.rm=TRUE)))
+  colnames(minmax) = colnames(dataRank)
+  rownames(minmax) = c("max", "min")
+
+  dataRank = as.matrix(dataRank)
+
+  transf<- rep(sqrt(0.5),ncol(dataRank))
+
+  dataRankOrg$proj = dataRank %*% transf
+
+  #order
+  o <- order(dataRankOrg$proj, decreasing=TRUE)
+  stmotifsRank <- NULL
+  for (i in 1:length(stmotifs)) {
+    indice<-o[i]
+    stmotifs[[indice]][["rank"]] <- c(dataRankOrg[indice,]['dist'], dataRankOrg[indice,]['word'], dataRankOrg[indice,]['qtd'], dataRankOrg[indice,]['proj'])
+    stmotifsRank[[stmotifs[[indice]]$isaxcod]]<- stmotifs[[indice]]
+  }
+
+  return (stmotifsRank)
 }

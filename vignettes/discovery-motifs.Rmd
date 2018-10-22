@@ -17,12 +17,12 @@ knitr::opts_chunk$set(
 ```
 
 This package `STSMotifs` allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently.
-To find the motifs, the `Combined Series Approach (CSA)` is used.
+To find the motifs, the `CSAMiningProcess` is used.
 The process is decomposed by several steps :
 
-1. Generation of candidates
-2. Treatment of candidates
-3. Rank the selected candidates
+1. Normalization and SAX Indexing
+2. Search for Spatial-time Motifs
+3. Rank Motifs
 
 ## Input
 To use functions of this package, some inputs are needed. The quality of outputs depends strongly by these parameters.
@@ -36,52 +36,37 @@ head(data)
 
 * `alpha`: The size of the alphabet used to encode the numerical values into a string with SAX.
 
-* `window_size`: The size of the subsequences.
+* `word`: The length of the motif.
 
-* `tslice` and `sslice`: The size of the blocks.
+* `sb` and `tb`: The spatial and temporal block sizes.
 
 A part of the process is applied into blocks (subsets of the original dataset). 
-With the tslice ("Time slice" number of rows in each block) and sslice ("Space slice" number of columns in each block), the user can specify the block size and the block shape.
+With the tb ("Time slice" number of rows in each block) and sb ("Space slice" number of columns in each block), the user can specify the block size and the block shape.
 
-* `kappa` : Threshold to check the minimal number of **spatial** occurrences of each motif.
+* `kappa` : Threshold to check the minimal number of spatial-time series occurrences inside each motif.
 
-* `sigma` : Threshold to check the minimal number of **global** occurrences of each motif.
-
-## Description of each step
-
-### Generation of candidates
-
-In this step, using tslice and sslice parameters, we create blocks from the original dataset. By using **CSA**, each column of the block are combined to create a single big series. The output of this step is described below.
-
-* For each block:
-  - sub dataset
-  - sub encoded dataset 
-  - candidates found
-  - encoded candidates found 
-  - position of the block
-  - start position of each similar candidate
-
-See more at [Generation of candidates](generation-of-candidates.html)
-
-### Treatment of candidates
-
-This step requires the candidates and the kappa and sigma thresholds.
-All the information about candidates are extracted and manipulated. In the end, the candidates that passed the restriction of the two thresholds are stored into a list of motifs. Each motif has as information: 
-
-* the encoded sequence
-* the regions in which motif is located
-* the coordinates of the starting positions of this motif into the original dataset
-* the number of occurrences (global and spacial occurrences)
-
-See more at [Treatment of candidates](validate-candidates.html)
+* `sigma` : Threshold to check the minimal number of occurrences inside each motif.
 
 
 
-### Rank the selected candidates
+## CSAMiningProcess 
 
-The previous step has created a list of motifs with all information about them.
-These motifs are ranked by their global and spatial occurrences.
-The output is the same as the previous step but ordered.
+### Normalization and SAX Indexing
+This first step, described by the **NormSAX** function, applies z-score data normalization in the entire dataset. Right after normalization, SAX indexing method is applied for a given alphabet `a`.
+
+See more at [Normalization and SAX Indexing](normalization-and-sax.html)
+
+
+### Search for Spatial-time Motifs
+In this step, using `sb` and `tb` parameters, we create blocks from the original spatial-time dataset. All subsequences inside each block are combined to create a single time series. From this combined time series, motifs are verified using `kappa` and `sigma` thresholds. Then, all the occurrences of motifs from neighboring blocks are grouped.
+
+See more at [Search for Spatial-time Motifs](search-stmotifs.html)
+
+
+### Rank Spatial-time Motifs
+The last step, described by the $RankSTMotifs$ function, makes a balance between distance among the occurrences of a motif with the encoded information on the motif itself and his quantity. It explores all motifs and their occurrences.
+
+
 
 
 ## Plot the result
@@ -89,15 +74,18 @@ The output is the same as the previous step but ordered.
 There are three ways to visualize the result:
 
 - Plot the intensity of values and highlight one or the top five motifs.
-
 - Plot the spatial-time series by selecting a range of columns in the dataset and highlight one motif.
-
 - Run shiny application to have an interactive interface to visualize the result.
     
     
 ## Example
 
 To see an example of output : [Output Example](examples.html)
+
+
+
+
+
 
 
 

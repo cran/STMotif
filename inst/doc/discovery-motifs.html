@@ -12,7 +12,7 @@
 
 <meta name="author" content="Amin Bazaz, Heraldo Borges, Eduardo Ogasawara" />
 
-<meta name="date" content="2018-08-23" />
+<meta name="date" content="2018-10-22" />
 
 <title>Motifs discovery in spatial-time series</title>
 
@@ -214,15 +214,15 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Motifs discovery in spatial-time series</h1>
 <h4 class="author"><em>Amin Bazaz, Heraldo Borges, Eduardo Ogasawara</em></h4>
-<h4 class="date"><em>2018-08-23</em></h4>
+<h4 class="date"><em>2018-10-22</em></h4>
 
 
 
-<p>This package <code>STSMotifs</code> allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently. To find the motifs, the <code>Combined Series Approach (CSA)</code> is used. The process is decomposed by several steps :</p>
+<p>This package <code>STSMotifs</code> allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently. To find the motifs, the <code>CSAMiningProcess</code> is used. The process is decomposed by several steps :</p>
 <ol style="list-style-type: decimal">
-<li>Generation of candidates</li>
-<li>Treatment of candidates</li>
-<li>Rank the selected candidates</li>
+<li>Normalization and SAX Indexing</li>
+<li>Search for Spatial-time Motifs</li>
+<li>Rank Motifs</li>
 </ol>
 <div id="input" class="section level2">
 <h2>Input</h2>
@@ -239,56 +239,39 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 #&gt; 6  645  -10   -4   411  -858 -1261 -574  -329 -367 -680</code></pre>
 <ul>
 <li><p><code>alpha</code>: The size of the alphabet used to encode the numerical values into a string with SAX.</p></li>
-<li><p><code>window_size</code>: The size of the subsequences.</p></li>
-<li><p><code>tslice</code> and <code>sslice</code>: The size of the blocks.</p></li>
+<li><p><code>word</code>: The length of the motif.</p></li>
+<li><p><code>sb</code> and <code>tb</code>: The spatial and temporal block sizes.</p></li>
 </ul>
-<p>A part of the process is applied into blocks (subsets of the original dataset). With the tslice (“Time slice” number of rows in each block) and sslice (“Space slice” number of columns in each block), the user can specify the block size and the block shape.</p>
+<p>A part of the process is applied into blocks (subsets of the original dataset). With the tb (“Time slice” number of rows in each block) and sb (“Space slice” number of columns in each block), the user can specify the block size and the block shape.</p>
 <ul>
-<li><p><code>kappa</code> : Threshold to check the minimal number of <strong>spatial</strong> occurrences of each motif.</p></li>
-<li><p><code>sigma</code> : Threshold to check the minimal number of <strong>global</strong> occurrences of each motif.</p></li>
+<li><p><code>kappa</code> : Threshold to check the minimal number of spatial-time series occurrences inside each motif.</p></li>
+<li><p><code>sigma</code> : Threshold to check the minimal number of occurrences inside each motif.</p></li>
 </ul>
 </div>
-<div id="description-of-each-step" class="section level2">
-<h2>Description of each step</h2>
-<div id="generation-of-candidates" class="section level3">
-<h3>Generation of candidates</h3>
-<p>In this step, using tslice and sslice parameters, we create blocks from the original dataset. By using <strong>CSA</strong>, each column of the block are combined to create a single big series. The output of this step is described below.</p>
-<ul>
-<li>For each block:
-<ul>
-<li>sub dataset</li>
-<li>sub encoded dataset</li>
-<li>candidates found</li>
-<li>encoded candidates found</li>
-<li>position of the block</li>
-<li>start position of each similar candidate</li>
-</ul></li>
-</ul>
-<p>See more at <a href="generation-of-candidates.html">Generation of candidates</a></p>
+<div id="csaminingprocess" class="section level2">
+<h2>CSAMiningProcess</h2>
+<div id="normalization-and-sax-indexing" class="section level3">
+<h3>Normalization and SAX Indexing</h3>
+<p>This first step, described by the <strong>NormSAX</strong> function, applies z-score data normalization in the entire dataset. Right after normalization, SAX indexing method is applied for a given alphabet <code>a</code>.</p>
+<p>See more at <a href="normalization-and-sax.html">Normalization and SAX Indexing</a></p>
 </div>
-<div id="treatment-of-candidates" class="section level3">
-<h3>Treatment of candidates</h3>
-<p>This step requires the candidates and the kappa and sigma thresholds. All the information about candidates are extracted and manipulated. In the end, the candidates that passed the restriction of the two thresholds are stored into a list of motifs. Each motif has as information:</p>
-<ul>
-<li>the encoded sequence</li>
-<li>the regions in which motif is located</li>
-<li>the coordinates of the starting positions of this motif into the original dataset</li>
-<li>the number of occurrences (global and spacial occurrences)</li>
-</ul>
-<p>See more at <a href="validate-candidates.html">Treatment of candidates</a></p>
+<div id="search-for-spatial-time-motifs" class="section level3">
+<h3>Search for Spatial-time Motifs</h3>
+<p>In this step, using <code>sb</code> and <code>tb</code> parameters, we create blocks from the original spatial-time dataset. All subsequences inside each block are combined to create a single time series. From this combined time series, motifs are verified using <code>kappa</code> and <code>sigma</code> thresholds. Then, all the occurrences of motifs from neighboring blocks are grouped.</p>
+<p>See more at <a href="search-stmotifs.html">Search for Spatial-time Motifs</a></p>
 </div>
-<div id="rank-the-selected-candidates" class="section level3">
-<h3>Rank the selected candidates</h3>
-<p>The previous step has created a list of motifs with all information about them. These motifs are ranked by their global and spatial occurrences. The output is the same as the previous step but ordered.</p>
+<div id="rank-spatial-time-motifs" class="section level3">
+<h3>Rank Spatial-time Motifs</h3>
+<p>The last step, described by the <span class="math inline">\(RankSTMotifs\)</span> function, makes a balance between distance among the occurrences of a motif with the encoded information on the motif itself and his quantity. It explores all motifs and their occurrences.</p>
 </div>
 </div>
 <div id="plot-the-result" class="section level2">
 <h2>Plot the result</h2>
 <p>There are three ways to visualize the result:</p>
 <ul>
-<li><p>Plot the intensity of values and highlight one or the top five motifs.</p></li>
-<li><p>Plot the spatial-time series by selecting a range of columns in the dataset and highlight one motif.</p></li>
-<li><p>Run shiny application to have an interactive interface to visualize the result.</p></li>
+<li>Plot the intensity of values and highlight one or the top five motifs.</li>
+<li>Plot the spatial-time series by selecting a range of columns in the dataset and highlight one motif.</li>
+<li>Run shiny application to have an interactive interface to visualize the result.</li>
 </ul>
 </div>
 <div id="example" class="section level2">

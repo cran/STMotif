@@ -1,3 +1,9 @@
+
+# STMotif 1.0.0
+
+* Redefining the functions names.
+* Improvements of the documentation.
+
 # STMotif 0.1.1
 
 * Improvements of the documentation.
@@ -6,6 +12,3 @@
 # STMotif 0.1.0
 
 * Fist version of the STMotif package.
-
-
-
