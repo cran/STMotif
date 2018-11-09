@@ -110,43 +110,36 @@ SearchSTMotifs <- function (D,DS,w,a,sb,tb,si=3,ka=3){
     block = as.vector(as.matrix(block))
     saxblock = as.vector(as.matrix(saxblock))
     motifs[[i]] <- identifyMotifsInBlock(ts = block, tss = saxblock, tb = tb ,w = w, a = a)
-    message(i, "/", size," - ", i/size*100,"%")
   }
 
-
   stmotifs <- list()
-  for (i in 1:length(motifs)){
+  for (i in 1:length(motifs)) {
     stmotifs <- STSIdentifySTMotif(stmotifs, motifs[[i]], nrows, ncols, rectangles[[i]], ka = ka, si = si)
   }
 
-
-  for (i in 1:length(stmotifs)) {
-    stmotif = stmotifs[[i]]
-    s = stmotif$vecs
-    t = stmotif$vect
-    stmotif$vecst = data.frame(s, t)
-    stmotif$vecs <- NULL
-    stmotif$vect <- NULL
-    stmotifs[[i]] = stmotif
-  }
-
-
-
-
-
   sttightmotifs <- list()
-  sttightmotifsTemp  <- list()
-  for(stmotif in (stmotifs)) {
-    sttightmotifsTemp <- STSIdentifyTightSTMotif(stmotif, rectangles)
-    for (item in (sttightmotifsTemp)) {
-      pos = length(sttightmotifs)+1
-      sttightmotifs[[pos]] <- item
-      names(sttightmotifs)[pos] = item$isaxcod
+
+  if (length(stmotifs)>0){
+    for (i in 1:length(stmotifs)) {
+      stmotif = stmotifs[[i]]
+      s = stmotif$vecs
+      t = stmotif$vect
+      stmotif$vecst = data.frame(s, t)
+      stmotif$vecs <- NULL
+      stmotif$vect <- NULL
+      stmotifs[[i]] = stmotif
+    }
+
+    for(stmotif in (stmotifs)) {
+      sttightmotifsSplit <- STSIdentifyTightSTMotif(stmotif, rectangles)
+      for (item in (sttightmotifsSplit)) {
+        pos = length(sttightmotifs)+1
+        sttightmotifs[[pos]] <- item
+        names(sttightmotifs)[pos] = item$isaxcod
+      }
     }
   }
-
-    return (sttightmotifs)
-
+  return (sttightmotifs)
 }
 
 
@@ -164,19 +157,23 @@ SearchSTMotifs <- function (D,DS,w,a,sb,tb,si=3,ka=3){
 #' rstmotifs <- RankSTMotifs(stmotifs)
 #' @export
 RankSTMotifs <- function(stmotifs) {
-  dataRank <- NULL
-  for (i in 1:length(stmotifs)) {
-    s <- stmotifs[[i]][["vecst"]][["s"]]
-    t <- stmotifs[[i]][["vecst"]][["t"]]
-    word <- stmotifs[[i]]$isaxcod
-    occurrences<- data.frame(space = s, time = t)
-    distance_rank <- comp_distance(occurrences)
-    word_rank <- comp_word(stmotifs[[i]]$isaxcod)
-    qtd_rank <- log(nrow(occurrences), base=2)
-    dataRank <- rbind(dataRank, data.frame(dist = distance_rank, word = word_rank, qtd=qtd_rank))
+  rstmotifs<-list()
+  if(length(stmotifs)>0){
+    dataRank <- NULL
+    for (i in 1:length(stmotifs)) {
+      s <- stmotifs[[i]][["vecst"]][["s"]]
+      t <- stmotifs[[i]][["vecst"]][["t"]]
+      word <- stmotifs[[i]]$isaxcod
+      occurrences<- data.frame(space = s, time = t)
+      distance_rank <- comp_distance(occurrences)
+      word_rank <- comp_word(stmotifs[[i]]$isaxcod)
+      qtd_rank <- log(nrow(occurrences), base=2)
+      dataRank <- rbind(dataRank, data.frame(dist = distance_rank, word = word_rank, qtd=qtd_rank))
+    }
+    rownames(dataRank) <- c(1:length(stmotifs))
+    rstmotifs <- rank(dataRank,stmotifs)
   }
-  rownames(dataRank) <- c(1:length(stmotifs))
-  rstmotifs <- rank_distance_word(dataRank,stmotifs)
+
   return(rstmotifs)
 }
 

@@ -1,3 +1,7 @@
+# STMotif 1.0.1
+
+* Fix some functions.
+* Improvements of the documentation.
 
 # STMotif 1.0.0
 

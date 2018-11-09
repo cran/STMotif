@@ -94,8 +94,10 @@ identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
 
   #Each identical sequence is grouping to create a sub matrix of ts.sax
   motif.sax <- NULL
-  for (i in 1:length(indices)){
-      motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
+  if (length(indices)>0){
+    for (i in 1:length(indices)){
+        motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
+    }
   }
 
   return(list(Subs.SAX=ts.sax, Motif.SAX=motif.sax, Indices=indices))
@@ -232,7 +234,6 @@ plot.series <- function(series, label_series = "", label_x = "", label_y = "") {
   grf <- grf + scale_colour_identity(series$color) + geom_line() + geom_point(data=series, aes(x = series$x, y = series$value), size=0.5) + facet_grid(variable ~ .)
   grf <- grf + xlab(label_x)
   grf <- grf + ylab(label_y)
-  #grf <- grf + ggtitle("Motifs in spatial-time series")
   grf <- grf + theme_bw(base_size = 10)
   grf <- grf + theme(panel.grid.major = element_blank()) + theme(panel.grid.minor = element_blank())
   grf <- grf + theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
@@ -283,18 +284,38 @@ comp_word <- function(str) {
     y <- y - x[i]*log(x[i],2)
 
   }
-  y <- y / (-log(1/n,2))
   return(y)
 }
 
 
-rank_distance_word <- function(dataRank,stmotifs)
+normalize.minmax <- function(data, norm.set=NULL)
+{
+  data = data.frame(data)
+  nums = unlist(lapply(data, is.numeric))
+  data = data[ , nums]
+
+  if(is.null(norm.set))
+  {
+    minmax = data.frame(t(sapply(data, max, na.rm=TRUE)))
+    minmax = rbind(minmax, t(sapply(data, min, na.rm=TRUE)))
+    colnames(minmax) = colnames(data)
+    rownames(minmax) = c("max", "min")
+  }
+  else {
+    minmax = norm.set
+  }
+  for (i in 1:ncol(data))
+    data[,i] = (data[,i] - minmax["min", i]) / (minmax["max", i] - minmax["min", i])
+  return (list(data=data, norm.set=minmax))
+}
+
+
+
+rank <- function(dataRank,stmotifs)
 {
   dataRankOrg <- dataRank
-  minmax = data.frame(t(sapply(dataRank, max, na.rm=TRUE)))
-  minmax = rbind(minmax, t(sapply(dataRank, min, na.rm=TRUE)))
-  colnames(minmax) = colnames(dataRank)
-  rownames(minmax) = c("max", "min")
+
+  dataRank <- normalize.minmax(dataRank)$data
 
   dataRank = as.matrix(dataRank)
 
@@ -304,12 +325,11 @@ rank_distance_word <- function(dataRank,stmotifs)
 
   #order
   o <- order(dataRankOrg$proj, decreasing=TRUE)
-  stmotifsRank <- NULL
+  stmotifsRank <- list()
   for (i in 1:length(stmotifs)) {
-    indice<-o[i]
+    indice <- o[i]
     stmotifs[[indice]][["rank"]] <- c(dataRankOrg[indice,]['dist'], dataRankOrg[indice,]['word'], dataRankOrg[indice,]['qtd'], dataRankOrg[indice,]['proj'])
-    stmotifsRank[[stmotifs[[indice]]$isaxcod]]<- stmotifs[[indice]]
+    stmotifsRank[[i]] <- stmotifs[[indice]]
   }
-
   return (stmotifsRank)
 }

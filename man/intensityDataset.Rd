@@ -4,14 +4,12 @@
 \alias{intensityDataset}
 \title{Plot the intensity of values}
 \usage{
-intensityDataset(dataset, rankList, position, alpha)
+intensityDataset(dataset, rankList, alpha)
 }
 \arguments{
 \item{dataset}{Dataset containing numeric values}
 
 \item{rankList}{List of ranked motifs}
-
-\item{position}{Select by an integer a motif with his position}
 
 \item{alpha}{Number of letter used to do the encode}
 }
@@ -28,5 +26,5 @@ D  <- STMotif::example_dataset
 DS <- NormSAX(STMotif::example_dataset,7)
 stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
 rstmotifs <- RankSTMotifs(stmotifs)
-intensityDataset(dataset = STMotif::example_dataset, rankList = rstmotifs, 1, 7)
+intensityDataset(dataset = STMotif::example_dataset, rankList = rstmotifs,  7)
 }

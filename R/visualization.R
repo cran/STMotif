@@ -42,12 +42,12 @@ displayPlotSeries <- function(dataset, rmotifs, position, space){
 #' Display the intensity of values and higthlight one motif
 #' @param dataset Dataset containing numeric values
 #' @param rankList List of ranked motifs
-#' @param position Select by an integer a motif with his position
 #' @param alpha Number of letter used to do the encode
 #' @return Pixelated dataset
 #' @import ggplot2
 #' @import reshape2
 #' @import scales
+#' @import RColorBrewer
 #' @importFrom grDevices grey.colors
 #' @examples
 #' #Launch all the workflow
@@ -56,34 +56,38 @@ displayPlotSeries <- function(dataset, rmotifs, position, space){
 #' DS <- NormSAX(STMotif::example_dataset,7)
 #' stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
 #' rstmotifs <- RankSTMotifs(stmotifs)
-#' intensityDataset(dataset = STMotif::example_dataset, rankList = rstmotifs, 1, 7)
+#' intensityDataset(dataset = STMotif::example_dataset, rankList = rstmotifs,  7)
 #' @export
-intensityDataset <- function(dataset,rankList,position,alpha){
+intensityDataset <- function(dataset,rankList,alpha){
   colorEncode <- 1:alpha
-  datasetColor <- as.matrix(dataset)
-  datasetColor <- as.vector(datasetColor)
-  datasetColor <- STSNormalization(datasetColor)
-  mybin <- binning(datasetColor, alpha)
-  datasetColor <- colorEncode[mybin$bins_factor]
-  datasetColor <- t(matrix(datasetColor, nrow = nrow(dataset), ncol = ncol(dataset)))
-  datasetColor <- melt(datasetColor)
-  datasetColor$motif <- FALSE
-  k <- 1
-  line <- NULL
-  while(k<length(rankList[[position]]$vecst$t)){
-    line[k] <- (rankList[[position]]$vecst$t[k]*length(dataset[1,])-length(dataset[1,]))+(rankList[[position]]$vecst$s[k])
-    k <- k + 1
+  datasetColor.Org <- as.matrix(dataset)
+  datasetColor.Org <- as.vector(datasetColor.Org)
+  datasetColor.Org <- STSNormalization(datasetColor.Org)
+  mybin <- binning(datasetColor.Org, alpha)
+  datasetColor.Org <- colorEncode[mybin$bins_factor]
+  datasetColor.Org <- t(matrix(datasetColor.Org, nrow = nrow(dataset), ncol = ncol(dataset)))
+  datasetColor.Org <- melt(datasetColor.Org)
+  datasetColor.Org$motif <- FALSE
+
+  palhetaCores <- brewer.pal(length(rankList), 'Spectral')
+  tam <- length(rankList)
+  motifs.plot <-data.frame("s"=NULL, "t"=NULL, "g"= NULL)
+  for (pos in 1:length(rankList)){
+    motifs.plot<- rbind(motifs.plot ,data.frame("s"=rankList[[pos]]$vecst$s, "t"=rankList[[pos]]$vecst$t, "g"= pos, "color"=palhetaCores[pos]))
   }
-  datasetColor[line,]$motif <- TRUE
-  ggplot(data=datasetColor, aes(x=datasetColor$Var1, y=datasetColor$Var2, fill=datasetColor$value)) +
-    geom_raster() +
-    scale_fill_gradientn(colours = c("white","dimgrey"), values = scales::rescale(1:alpha), limits=c(1,alpha))+
-    geom_point(aes(size=ifelse(datasetColor$motif, "dot", "no_dot"),colour=ifelse(datasetColor$motif, "dot", "no_dot")), na.rm=T) +
-    scale_size_manual(values=c("dot"=1, "no_dot"=NA), guide="none") +
-    scale_colour_manual(name="", values = c("dot"="red", "no_dot"=NA),labels = c(paste("Motif",position),"")) +
-    theme_bw() +
-    ggtitle("Intensity of values in the dataset") + xlab("Space") + ylab("Time") +
-    guides(fill=guide_legend(title="SAX Encode")) + scale_y_reverse()
+
+  datasetColor <- merge(datasetColor.Org, motifs.plot, by.x=c('Var1', 'Var2'), by.y=c('s', 't'), all.x = TRUE)
+  datasetColor$motif[!is.na(datasetColor$g)] <- TRUE
+  datasetColor$g <- NULL
+  datasetColor$color <- as.character(datasetColor$color)
+
+
+  ggplot(data=datasetColor, aes(x=datasetColor$Var1, y=datasetColor$Var2, fill=datasetColor$value, color=datasetColor$color))   + geom_raster() +
+    scale_fill_gradientn(colours = c("white","dimgrey"), values = scales::rescale(1:alpha), limits=c(1,alpha)) +
+    theme_bw() + xlab("Space") + ylab("Time") + scale_y_reverse() +
+    guides(fill=FALSE, color=FALSE) +
+    geom_point(colour = ifelse(datasetColor$motif,datasetColor$color,NA), size = 1, show.legend = FALSE)
+
 }
 
 

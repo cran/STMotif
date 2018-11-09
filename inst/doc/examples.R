@@ -11,6 +11,7 @@ source(file = "../R/visualization.R")
 library(stats)
 library(ggplot2)
 library(reshape2)
+library(RColorBrewer)
 
 ## ---- echo=TRUE----------------------------------------------------------
 
@@ -37,8 +38,8 @@ head(stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,10))
 head(rstmotifs <- RankSTMotifs(stmotifs))
 
 ## ----fig, fig.height = 4, fig.width = 6, fig.align = "center"------------
-# Plot the intensity of the dataset and highlight one selected motif
-intensityDataset(dataset = D,rankList = rstmotifs,position = 1,alpha = 7)
+# Plot the intensity of the dataset and highlight the motifs from the rankList
+intensityDataset(dataset = D,rankList = rstmotifs,alpha = 7)
 
 ## ----fig1, fig.height = 4, fig.width = 6, fig.align = "center"-----------
 # Plot five specific spatial-series which some of them contain the best motif

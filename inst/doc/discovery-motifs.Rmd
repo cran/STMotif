@@ -73,7 +73,7 @@ The last step, described by the $RankSTMotifs$ function, makes a balance between
 
 There are three ways to visualize the result:
 
-- Plot the intensity of values and highlight one or the top five motifs.
+- Plot the intensity of values and highlight the motifs from the list.
 - Plot the spatial-time series by selecting a range of columns in the dataset and highlight one motif.
 - Run shiny application to have an interactive interface to visualize the result.
     
