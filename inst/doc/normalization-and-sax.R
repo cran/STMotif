@@ -3,7 +3,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-source("../R/mainFunction.R")
+source(file = "../R/mainFunction.R")
+source(file = "../R/subFunction.R")
 
 ## ---- echo=FALSE, fig.cap="SAX Encoding with 3 letters", out.width = '100%'----
 knitr::include_graphics("saxencode.png")

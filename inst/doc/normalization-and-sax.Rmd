@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-source("../R/mainFunction.R")
+source(file = "../R/mainFunction.R")
+source(file = "../R/subFunction.R")
 ```
 
 The purpose of this documentation is to understand how the `Normalization & SAX indexing` step works.

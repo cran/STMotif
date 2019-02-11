@@ -3,7 +3,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-source("../R/mainFunction.R")
+source(file = "../R/mainFunction.R")
+source(file = "../R/subFunction.R")
 
 ## ---- echo=FALSE, fig.cap="Blocks creation", out.width = '70%'-----------
 knitr::include_graphics("partitioningintoblocks.png")

@@ -2,7 +2,7 @@
 # Build an encode for the values
 binning <- function(v, a) {
   p <- seq(from = 0, to = 1, by = 1/a)
-  q <- quantile(v, p)
+  q <- stats::quantile(v, p)
   qf <- matrix(c(q[1:(length(q)-1)],q[2:(length(q))]), ncol=2)
   vp <- cut(v, unique(q), FALSE, include.lowest=TRUE)
   m <- tapply(v, vp, mean)
@@ -14,7 +14,7 @@ binning <- function(v, a) {
 # Normalize the data
 # Normalize the data using z-score
 STSNormalization <- function (vector){
-  return ((vector-mean(vector, na.rm = T))/sd(vector, na.rm = T))
+  return ((vector-mean(vector, na.rm = T))/stats::sd(vector, na.rm = T))
 }
 
 
@@ -74,7 +74,7 @@ identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
     }
   }
 
-  ts.sax <- na.omit(ts.sax)
+  ts.sax <- stats::na.omit(ts.sax)
   ts.sax <- as.data.frame(ts.sax, stringsAsFactors = FALSE)
 
   colnames(ts.sax) <- c("StartPosition", 1:w)

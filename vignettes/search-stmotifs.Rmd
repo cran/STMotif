@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-source("../R/mainFunction.R")
+source(file = "../R/mainFunction.R")
+source(file = "../R/subFunction.R")
 ```
 
 The purpose of this documentation is to understand the second step of CSA data minig process correspond to **SearchSTMotifs** function. In this function, the spatial-time dataset DS is partitioned into blocks, created based on `sb` (spatial block size) and `tb` (temporal block size).   

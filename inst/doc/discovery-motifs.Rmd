@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 This package `STSMotifs` allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently.
 To find the motifs, the `CSAMiningProcess` is used.
 The process is decomposed by several steps :

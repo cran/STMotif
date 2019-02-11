@@ -1,295 +1,244 @@
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="pandoc" />
+<title>Input</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<meta name="author" content="Amin Bazaz, Heraldo Borges, Eduardo Ogasawara" />
-
-<meta name="date" content="2018-11-09" />
-
-<title>Motifs discovery in spatial-time series</title>
-
-
-
-
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
 
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
 }
-#header {
-text-align: center;
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
 }
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
 }
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
+
+h1 {
+   font-size:2.2em;
 }
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
+
+h2 {
+   font-size:1.8em;
 }
-#TOC ul ul {
-margin-left: -2em;
+
+h3 {
+   font-size:1.4em;
 }
-#TOC li {
-line-height: 16px;
+
+h4 {
+   font-size:1.0em;
 }
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
+
+h5 {
+   font-size:0.9em;
 }
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
+
+h6 {
+   font-size:0.8em;
 }
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
 }
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
+
+pre, img {
+  max-width: 100%;
 }
 pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
+  overflow-x: auto;
 }
-pre:not([class]) {
-background-color: #f7f7f7;
+pre code {
+   display: block; padding: 0.5em;
 }
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
 </style>
+
+
 
 </head>
 
 <body>
+<p>This package <code>STSMotifs</code> allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently.
+To find the motifs, the <code>CSAMiningProcess</code> is used.
+The process is decomposed by several steps :</p>
 
-
-
-
-<h1 class="title toc-ignore">Motifs discovery in spatial-time series</h1>
-<h4 class="author"><em>Amin Bazaz, Heraldo Borges, Eduardo Ogasawara</em></h4>
-<h4 class="date"><em>2018-11-09</em></h4>
-
-
-
-<p>This package <code>STSMotifs</code> allows to perform a research of motif in spatial-time series. The main purpose is to find a way to handle the issue of large amounts of data. The package offers a way to do this research quickly and efficiently. To find the motifs, the <code>CSAMiningProcess</code> is used. The process is decomposed by several steps :</p>
-<ol style="list-style-type: decimal">
+<ol>
 <li>Normalization and SAX Indexing</li>
 <li>Search for Spatial-time Motifs</li>
 <li>Rank Motifs</li>
 </ol>
-<div id="input" class="section level2">
+
 <h2>Input</h2>
+
 <p>To use functions of this package, some inputs are needed. The quality of outputs depends strongly by these parameters.</p>
+
 <ul>
 <li><code>dataset</code> : Dataframe which contains numerics values. Columns represent the space and rows the time.</li>
 </ul>
+
 <pre><code>#&gt;      1    2    3     4     5     6    7     8    9   10
 #&gt; 1  737 1350  869   750  1138   758 1006  1095   99  -83
 #&gt; 2  283  565  504   317  1849   944  -80  -895 -936  906
 #&gt; 3 -118 -375 -564  -803   870   472 -922 -1009 -698  741
 #&gt; 4 -696 -844 -654 -1303  -474  -591 -262  1034 1012  376
 #&gt; 5 -251 -622  -14  -587 -1108 -1401  404  1545 1696  247
-#&gt; 6  645  -10   -4   411  -858 -1261 -574  -329 -367 -680</code></pre>
+#&gt; 6  645  -10   -4   411  -858 -1261 -574  -329 -367 -680
+</code></pre>
+
 <ul>
 <li><p><code>alpha</code>: The size of the alphabet used to encode the numerical values into a string with SAX.</p></li>
 <li><p><code>word</code>: The length of the motif.</p></li>
 <li><p><code>sb</code> and <code>tb</code>: The spatial and temporal block sizes.</p></li>
 </ul>
-<p>A part of the process is applied into blocks (subsets of the original dataset). With the tb (“Time slice” number of rows in each block) and sb (“Space slice” number of columns in each block), the user can specify the block size and the block shape.</p>
+
+<p>A part of the process is applied into blocks (subsets of the original dataset). 
+With the tb (&ldquo;Time slice&rdquo; number of rows in each block) and sb (&ldquo;Space slice&rdquo; number of columns in each block), the user can specify the block size and the block shape.</p>
+
 <ul>
 <li><p><code>kappa</code> : Threshold to check the minimal number of spatial-time series occurrences inside each motif.</p></li>
 <li><p><code>sigma</code> : Threshold to check the minimal number of occurrences inside each motif.</p></li>
 </ul>
-</div>
-<div id="csaminingprocess" class="section level2">
+
 <h2>CSAMiningProcess</h2>
-<div id="normalization-and-sax-indexing" class="section level3">
+
 <h3>Normalization and SAX Indexing</h3>
+
 <p>This first step, described by the <strong>NormSAX</strong> function, applies z-score data normalization in the entire dataset. Right after normalization, SAX indexing method is applied for a given alphabet <code>a</code>.</p>
+
 <p>See more at <a href="normalization-and-sax.html">Normalization and SAX Indexing</a></p>
-</div>
-<div id="search-for-spatial-time-motifs" class="section level3">
+
 <h3>Search for Spatial-time Motifs</h3>
+
 <p>In this step, using <code>sb</code> and <code>tb</code> parameters, we create blocks from the original spatial-time dataset. All subsequences inside each block are combined to create a single time series. From this combined time series, motifs are verified using <code>kappa</code> and <code>sigma</code> thresholds. Then, all the occurrences of motifs from neighboring blocks are grouped.</p>
+
 <p>See more at <a href="search-stmotifs.html">Search for Spatial-time Motifs</a></p>
-</div>
-<div id="rank-spatial-time-motifs" class="section level3">
+
 <h3>Rank Spatial-time Motifs</h3>
-<p>The last step, described by the <span class="math inline">\(RankSTMotifs\)</span> function, makes a balance between distance among the occurrences of a motif with the encoded information on the motif itself and his quantity. It explores all motifs and their occurrences.</p>
-</div>
-</div>
-<div id="plot-the-result" class="section level2">
+
+<p>The last step, described by the \(RankSTMotifs\) function, makes a balance between distance among the occurrences of a motif with the encoded information on the motif itself and his quantity. It explores all motifs and their occurrences.</p>
+
 <h2>Plot the result</h2>
+
 <p>There are three ways to visualize the result:</p>
+
 <ul>
 <li>Plot the intensity of values and highlight the motifs from the list.</li>
 <li>Plot the spatial-time series by selecting a range of columns in the dataset and highlight one motif.</li>
 <li>Run shiny application to have an interactive interface to visualize the result.</li>
 </ul>
-</div>
-<div id="example" class="section level2">
+
 <h2>Example</h2>
+
 <p>To see an example of output : <a href="examples.html">Output Example</a></p>
-</div>
-
-
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 
 </body>
+
 </html>
