@@ -1,4 +1,4 @@
-4d6002d53082ec80dea6985ca96890ba *DESCRIPTION
+b90a7b3e4ec193216228ebdb9dcd06dd *DESCRIPTION
 e4620e142be2ed759c1fd576402efd72 *NAMESPACE
 a44a5b7f6998eafa6930caae8ccdbd42 *NEWS.md
 483e55a3418bb666506539d47d1a38cf *R/STMotif.R
@@ -7,7 +7,7 @@ f15d0ce1ea90334218be210421cb508d *R/mainFunction.R
 35533601483aded24a4e0c63856d197e *R/subFunction.R
 d41d8cd98f00b204e9800998ecf8427e *R/test.R
 9492493a73bbd7d008e3c219d62d128d *R/visualization.R
-ab6d49927f0b8501c412371a42d3430e *README.md
+650722fd19282626979fe1ca6c210ea8 *README.md
 6ec2fb0e575c0a16db4caa8776a02550 *build/vignette.rds
 763855c777501eb66bb9b52d1083c6eb *data/example_data.RData
 ed3a0ddef6ea6a348e08016146e0635d *inst/doc/discovery-motifs.R
@@ -15,7 +15,7 @@ f756ae35f8c94e4d2c67d256e5abf04a *inst/doc/discovery-motifs.Rmd
 5d97037c92854f0ebd63f91ffbca46c9 *inst/doc/discovery-motifs.html
 3ac5255c47c2fd946d7b7d095244a2a3 *inst/doc/examples.R
 b19392840844b78c1670c2951c7be9d0 *inst/doc/examples.Rmd
-19d2905e378d8f4c7c8abbb6c6871cc0 *inst/doc/examples.html
+fea592ebe337e4d834dccc0f5b1abc81 *inst/doc/examples.html
 ea2499602cb8dc37cb2820541cf54c79 *inst/doc/normalization-and-sax.R
 696cefd847ff7f8900be4f9d469497bc *inst/doc/normalization-and-sax.Rmd
 aaafb6b1fe10bea0375ef94f98c9d7be *inst/doc/normalization-and-sax.html
