@@ -1,6 +1,7 @@
 ## ----setup, include = FALSE----------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
+  warning = FALSE,
   comment = "#>"
 )
 
@@ -13,35 +14,44 @@ library(ggplot2)
 library(reshape2)
 library(RColorBrewer)
 
+## ---- eval = FALSE-------------------------------------------------------
+#  install.packages("STMotif")
+
+## ---- eval = FALSE-------------------------------------------------------
+#  library(STMotif)
+
 ## ---- echo=TRUE----------------------------------------------------------
 
 # The process is launched on the provided example dataset
 dim(D <- STMotif::example_dataset)
 
-
 # Normalizartion and SAX indexing
-DS <- NormSAX(D = STMotif::example_dataset,a =7)
+DS <- NormSAX(D = STMotif::example_dataset,a =5)
 
 # Information of the normalized and SAX indexing dataset 
 # The candidates built 
-head(NormSAX(D = STMotif::example_dataset, a = 7)[,1:10])
+head(NormSAX(D = STMotif::example_dataset, a = 5)[,1:10])
 
 
 ## ---- echo=TRUE----------------------------------------------------------
 # The list of motifs 
 # stmotifs <- SearchSTMotifs(D,DS,w,a,sb,tb,si,ka)
-head(stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,10))
+stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
+stmotifs[[1]]
 
 ## ---- echo=TRUE----------------------------------------------------------
 # The rank list of stmotifs 
-# rstmotifs <- RankSTMotifs(stmotifs)
-head(rstmotifs <- RankSTMotifs(stmotifs))
+rstmotifs <- RankSTMotifs(stmotifs)
+rstmotifs[[1]]
 
-## ----fig, fig.height = 4, fig.width = 6, fig.align = "center"------------
-# Plot the intensity of the dataset and highlight the motifs from the rankList
-intensityDataset(dataset = D,rankList = rstmotifs,alpha = 7)
+## ---- echo=TRUE----------------------------------------------------------
+# CSAMiningProcess
+rstmotifs <- RankSTMotifs(stmotifs)
+rstmotifs[[1]]
 
-## ----fig1, fig.height = 4, fig.width = 6, fig.align = "center"-----------
-# Plot five specific spatial-series which some of them contain the best motif
-displayPlotSeries(dataset = D, rmotifs = rstmotifs ,position = 1 ,space = c(1,2,5:7))
+## ----fig, fig.height = 4, fig.width = 5, fig.align = "center"------------
+display_motifsDataset(dataset = STMotif::example_dataset, rstmotifs[c(1:4)],  5)
+
+## ----fig1, fig.height = 4, fig.width = 5, fig.align = "center"-----------
+display_motifsSTSeries(dataset = STMotif::example_dataset,rstmotifs[c(1:4)],space = c(1:4,10:12))
 

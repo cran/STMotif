@@ -6,7 +6,7 @@
 #' @return Dataset adjusted to build the blocks.
 #' @examples
 #' #Adjust a block
-#' D <- STSADatasetAdjust(STMotif::example_dataset, 10, 10)
+#' D <- STSADatasetAdjust(STMotif::example_dataset, 20, 12)
 #' @export
 STSADatasetAdjust  <- function(D, tb, sb) {
   c = ncol(D)
@@ -34,12 +34,11 @@ STSADatasetAdjust  <- function(D, tb, sb) {
 #' @return recmatrix: Matrix giving as information the blocks containing this motif
 #' @return vectst: Coordinate of the start positions of the motif in the original dataset
 #' @return rank: L of information used for motif ranking, as [dist, word, qtd, proj]
-#' @note To see more informations: \href{../inst/doc/discovery-motifs.html}{CSA Datamining Process}
 #' @examples
 #' #CSA Datamining process
 #' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,7)
-#' rmotif <- CSAMiningProcess(D,DS,3,7,10,10,3,7)
+#' DS <- NormSAX(STMotif::example_dataset,5)
+#' rmotif <- CSAMiningProcess(D,DS,4,5,4,10,2,2)
 #' @export
 CSAMiningProcess <- function (D,DS,w,a,sb,tb,si,ka){
   DS <- NormSAX(D,a)
@@ -53,10 +52,9 @@ CSAMiningProcess <- function (D,DS,w,a,sb,tb,si,ka){
 #' @param D Dataset containing numeric values
 #' @param a Number of letters use to encode
 #' @return A normalized and encoded dataset for a given alphabet a
-#' #' @note To see more informations: \href{../inst/doc/normalization-and-sax.html}{Normalize the data and SAX indexing}
 #' @examples
 #' #Normalization and Sax Dataset
-#' DS <- NormSAX(STMotif::example_dataset, 7)
+#' DS <- NormSAX(STMotif::example_dataset, 5)
 #' @export
 NormSAX <- function (D,a){
   vector <- as.matrix(D)
@@ -84,12 +82,11 @@ NormSAX <- function (D,a){
 #' @return isaxcode: Motif sequences in character format
 #' @return recmatrix: Matrix giving as information the blocks containing this motif
 #' @return vectst: Coordinate of the start positions of the motif in the original dataset
-#' @note  To see more informations: \href{../inst/doc/search-stmotifs.html}{Search for Spatial-time Motifs}
 #' @examples
 #' #Search for Spatial-time Motifs
 #' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,7)
-#' stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
+#' DS <- NormSAX(STMotif::example_dataset,5)
+#' stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
 #' @export
 SearchSTMotifs <- function (D,DS,w,a,sb,tb,si=3,ka=3){
 
@@ -152,8 +149,8 @@ SearchSTMotifs <- function (D,DS,w,a,sb,tb,si=3,ka=3){
 #' @examples
 #' #Search for Spatial-time Motifs
 #' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,7)
-#' stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
+#' DS <- NormSAX(STMotif::example_dataset,5)
+#' stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
 #' rstmotifs <- RankSTMotifs(stmotifs)
 #' @export
 RankSTMotifs <- function(stmotifs) {

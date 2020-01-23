@@ -4,12 +4,11 @@
 \name{example_dataset}
 \alias{example_dataset}
 \title{Example of dataset}
-\format{An object of class \code{data.frame} with 100 rows and 50 columns.}
+\format{The dimensions of the dataset are 20 rows and 12 columns and this dataset contains 12 spatial-time series.}
 \usage{
 example_dataset
 }
 \description{
 Toy example to launch functions.
-The dimensions of the dataset are 100 rows and 50 columns and this dataset contains 50 spatial-time series.
 }
 \keyword{example_dataset}

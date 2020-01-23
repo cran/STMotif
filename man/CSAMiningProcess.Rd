@@ -37,12 +37,9 @@ rank: L of information used for motif ranking, as [dist, word, qtd, proj]
 \description{
 CSA Datamining Process
 }
-\note{
-To see more informations: \href{../inst/doc/discovery-motifs.html}{CSA Datamining Process}
-}
 \examples{
 #CSA Datamining process
 D  <- STMotif::example_dataset
-DS <- NormSAX(STMotif::example_dataset,7)
-rmotif <- CSAMiningProcess(D,DS,3,7,10,10,3,7)
+DS <- NormSAX(STMotif::example_dataset,5)
+rmotif <- CSAMiningProcess(D,DS,4,5,4,10,2,2)
 }

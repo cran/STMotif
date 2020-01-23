@@ -20,7 +20,7 @@ Rank motifs by their quality
 \examples{
 #Search for Spatial-time Motifs
 D  <- STMotif::example_dataset
-DS <- NormSAX(STMotif::example_dataset,7)
-stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
+DS <- NormSAX(STMotif::example_dataset,5)
+stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
 rstmotifs <- RankSTMotifs(stmotifs)
 }

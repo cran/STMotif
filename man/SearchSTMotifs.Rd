@@ -35,12 +35,9 @@ vectst: Coordinate of the start positions of the motif in the original dataset
 \description{
 Search for Spatial-time Motifs
 }
-\note{
-To see more informations: \href{../inst/doc/search-stmotifs.html}{Search for Spatial-time Motifs}
-}
 \examples{
 #Search for Spatial-time Motifs
 D  <- STMotif::example_dataset
-DS <- NormSAX(STMotif::example_dataset,7)
-stmotifs <- SearchSTMotifs(D,DS,3,7,10,10,3,7)
+DS <- NormSAX(STMotif::example_dataset,5)
+stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
 }

@@ -13,12 +13,11 @@ NormSAX(D, a)
 }
 \value{
 A normalized and encoded dataset for a given alphabet a
-#' @note To see more informations: \href{../inst/doc/normalization-and-sax.html}{Normalize the data and SAX indexing}
 }
 \description{
 Normalize the data and SAX indexing
 }
 \examples{
 #Normalization and Sax Dataset
-DS <- NormSAX(STMotif::example_dataset, 7)
+DS <- NormSAX(STMotif::example_dataset, 5)
 }

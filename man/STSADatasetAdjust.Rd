@@ -23,5 +23,5 @@ Adjust the dimensions of a dataset to build the blocks
 }
 \examples{
 #Adjust a block
-D <- STSADatasetAdjust(STMotif::example_dataset, 10, 10)
+D <- STSADatasetAdjust(STMotif::example_dataset, 20, 12)
 }
