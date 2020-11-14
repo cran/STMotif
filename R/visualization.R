@@ -1,7 +1,7 @@
 #' Plot the selected spatial-time series with the selected motifs highlighted
 #'
 #' @param dataset Dataset containing numeric values
-#' @param rmotifs List of ranked motifs
+#' @param rstmotifs List of ranked motifs
 #' @param space Select a range of columns to plot the corresponding spatial series
 #' @return Selected spatial series with the selected motifs highlighted
 #' @import ggplot2
@@ -16,37 +16,40 @@
 #' display_motifsSTSeries(dataset = STMotif::example_dataset,rstmotifs[c(1:4)],space = c(1:4,10:12))
 #' @export
 #'
-display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset))){
+display_motifsSTSeries <- function (dataset, rstmotifs,space = c(1:length(dataset))){
   dataset <- as.data.frame(dataset)
   colnames(dataset) <- paste("",1:length(dataset), sep = "")
 
-  size_motif <- nchar(rmotifs[[1]]$isaxcod)
   namesCol <- paste("ST",colnames(dataset),sep = "")
   data <- as.data.frame(dataset[,space])
   colnames(data) <- paste("ST",colnames(dataset)[space], sep = "")
   data <- data.frame(x = 1:nrow(data),data)
   data <- reshape2::melt(data,id.vars = 1)
   data <- data.frame(data, color = "black")
-  palhetaCores <- brewer.pal(length(rmotifs), 'Spectral')
-  levels(data$color) <- c("black", palhetaCores)
 
-  for (position in 1:length(rmotifs)){
-    for(i in 1:length(rmotifs[[position]]$vecst$s)){
-      if(rmotifs[[position]]$vecst$s[i]%in%space){
-        data[data$variable==namesCol[rmotifs[[position]]$vecst$s[i]],][(rmotifs[[position]]$vecst$t[i]):(rmotifs[[position]]$vecst$t[i]+(size_motif-1)),4] <- palhetaCores[position]
+
+  if (!(is.null(rstmotifs)||length(rstmotifs)==0)){
+    palhetaCores <- brewer.pal(length(rstmotifs), 'Spectral')
+    levels(data$color) <- c("black", palhetaCores)
+
+    size_motif <- nchar(rstmotifs[[1]]$isaxcod)
+    for (position in 1:length(rstmotifs)){
+      for(i in 1:length(rstmotifs[[position]]$vecst$s)){
+        if(rstmotifs[[position]]$vecst$s[i]%in%space){
+          data[data$variable==namesCol[rstmotifs[[position]]$vecst$s[i]],][(rstmotifs[[position]]$vecst$t[i]):(rstmotifs[[position]]$vecst$t[i]+(size_motif-1)),4] <- palhetaCores[position]
+        }
       }
     }
   }
-
   plot.series(data[1:nrow(data),])
-
 }
+
 
 
 #' Plot a heatmap of the dataset and highlight the selected motifs from the list
 #'
 #' @param dataset Numerical dataset
-#' @param rankList List of ranked motifs
+#' @param rstmotifs List of ranked motifs
 #' @param alpha The cardinality of the SAX alphabet
 #' @return Heatmap dataset with seelected motifs
 #' @import ggplot2
@@ -64,7 +67,7 @@ display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset)
 #' display_motifsDataset(dataset = STMotif::example_dataset, rstmotifs[c(1:4)],  5)
 #' @export
 #'
-display_motifsDataset <- function(dataset,rankList,alpha){
+display_motifsDataset <- function(dataset,rstmotifs,alpha){
   colorEncode <- 1:alpha
   datasetColor.Org <- as.matrix(dataset)
   datasetColor.Org <- as.vector(datasetColor.Org)
@@ -75,11 +78,11 @@ display_motifsDataset <- function(dataset,rankList,alpha){
   datasetColor.Org <- melt(datasetColor.Org)
   datasetColor.Org$motif <- FALSE
 
-  palhetaCores <- brewer.pal(length(rankList), 'Spectral')
+  palhetaCores <- brewer.pal(length(rstmotifs), 'Spectral')
 
   motifs.plot <-data.frame("s"=NULL, "t"=NULL, "g"= NULL)
-  for (pos in 1:length(rankList)){
-    motifs.plot<- rbind(motifs.plot ,data.frame("s"=rankList[[pos]]$vecst$s, "t"=rankList[[pos]]$vecst$t, "g"= pos, "color"=palhetaCores[pos]))
+  for (pos in 1:length(rstmotifs)){
+    motifs.plot<- rbind(motifs.plot ,data.frame("s"=rstmotifs[[pos]]$vecst$s, "t"=rstmotifs[[pos]]$vecst$t, "g"= pos, "color"=palhetaCores[pos]))
   }
 
   datasetColor <- merge(datasetColor.Org, motifs.plot, by.x=c('Var1', 'Var2'), by.y=c('s', 't'), all.x = TRUE)

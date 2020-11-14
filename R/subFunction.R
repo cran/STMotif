@@ -96,7 +96,7 @@ identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
   motif.sax <- NULL
   if (length(indices)>0){
     for (i in 1:length(indices)){
-        motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
+      motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
     }
   }
 

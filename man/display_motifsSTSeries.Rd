@@ -4,12 +4,12 @@
 \alias{display_motifsSTSeries}
 \title{Plot the selected spatial-time series with the selected motifs highlighted}
 \usage{
-display_motifsSTSeries(dataset, rmotifs, space = c(1:length(dataset)))
+display_motifsSTSeries(dataset, rstmotifs, space = c(1:length(dataset)))
 }
 \arguments{
 \item{dataset}{Dataset containing numeric values}
 
-\item{rmotifs}{List of ranked motifs}
+\item{rstmotifs}{List of ranked motifs}
 
 \item{space}{Select a range of columns to plot the corresponding spatial series}
 }

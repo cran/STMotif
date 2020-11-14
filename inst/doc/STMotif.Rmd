@@ -1,10 +1,10 @@
 ---
 title: "STMotif R Package"
-author: "Heraldo Borges, Amin Bazaz, Eduardo Ogasawara"
+author: "Heraldo Borges, Amin Bazaz, Esther Pacitti, Eduardo Ogasawara"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Spatial-Time Motif Discovery with STMotif}
+  %\VignetteIndexEntry{STMotif R Package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   
@@ -98,7 +98,7 @@ rstmotifs[[1]]
 
 ```{r, echo=TRUE}
 # CSAMiningProcess
-rstmotifs <- RankSTMotifs(stmotifs)
+stmotifs <- CSAMiningProcess(D,DS,4,5,4,10,2,2)
 rstmotifs[[1]]
 ```
 

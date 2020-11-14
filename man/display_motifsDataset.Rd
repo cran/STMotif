@@ -4,12 +4,12 @@
 \alias{display_motifsDataset}
 \title{Plot a heatmap of the dataset and highlight the selected motifs from the list}
 \usage{
-display_motifsDataset(dataset, rankList, alpha)
+display_motifsDataset(dataset, rstmotifs, alpha)
 }
 \arguments{
 \item{dataset}{Numerical dataset}
 
-\item{rankList}{List of ranked motifs}
+\item{rstmotifs}{List of ranked motifs}
 
 \item{alpha}{The cardinality of the SAX alphabet}
 }

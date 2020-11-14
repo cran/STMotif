@@ -3,7 +3,6 @@
 \docType{package}
 \name{STMotif}
 \alias{STMotif}
-\alias{STMotif-package}
 \title{Package STMotif}
 \description{
 This package `STSMotifs` allows to identify motifs in spatial-time series. A motif is a previously unknown subsequence of a (spatial) time series with relevant number of occurrences. For this purpose, the Combined Series Approach (CSA) is used.

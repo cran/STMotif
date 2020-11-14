@@ -1,11 +1,11 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
   comment = "#>"
 )
 
-## ---- echo=FALSE---------------------------------------------------------
+## ---- echo=FALSE--------------------------------------------------------------
 source(file = "../R/mainFunction.R")
 source(file = "../R/subFunction.R")
 source(file = "../R/visualization.R")
@@ -14,13 +14,13 @@ library(ggplot2)
 library(reshape2)
 library(RColorBrewer)
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  install.packages("STMotif")
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  library(STMotif)
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo=TRUE---------------------------------------------------------------
 
 # The process is launched on the provided example dataset
 dim(D <- STMotif::example_dataset)
@@ -33,25 +33,25 @@ DS <- NormSAX(D = STMotif::example_dataset,a =5)
 head(NormSAX(D = STMotif::example_dataset, a = 5)[,1:10])
 
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo=TRUE---------------------------------------------------------------
 # The list of motifs 
 # stmotifs <- SearchSTMotifs(D,DS,w,a,sb,tb,si,ka)
 stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
 stmotifs[[1]]
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo=TRUE---------------------------------------------------------------
 # The rank list of stmotifs 
 rstmotifs <- RankSTMotifs(stmotifs)
 rstmotifs[[1]]
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo=TRUE---------------------------------------------------------------
 # CSAMiningProcess
-rstmotifs <- RankSTMotifs(stmotifs)
+stmotifs <- CSAMiningProcess(D,DS,4,5,4,10,2,2)
 rstmotifs[[1]]
 
-## ----fig, fig.height = 4, fig.width = 5, fig.align = "center"------------
+## ----fig, fig.height = 4, fig.width = 5, fig.align = "center"-----------------
 display_motifsDataset(dataset = STMotif::example_dataset, rstmotifs[c(1:4)],  5)
 
-## ----fig1, fig.height = 4, fig.width = 5, fig.align = "center"-----------
+## ----fig1, fig.height = 4, fig.width = 5, fig.align = "center"----------------
 display_motifsSTSeries(dataset = STMotif::example_dataset,rstmotifs[c(1:4)],space = c(1:4,10:12))
 

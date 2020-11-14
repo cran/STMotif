@@ -4,7 +4,9 @@
 \name{example_dataset}
 \alias{example_dataset}
 \title{Example of dataset}
-\format{The dimensions of the dataset are 20 rows and 12 columns and this dataset contains 12 spatial-time series.}
+\format{
+The dimensions of the dataset are 20 rows and 12 columns and this dataset contains 12 spatial-time series.
+}
 \usage{
 example_dataset
 }
