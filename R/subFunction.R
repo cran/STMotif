@@ -96,7 +96,7 @@ identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
   motif.sax <- NULL
   if (length(indices)>0){
     for (i in 1:length(indices)){
-      motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
+        motif.sax[[i]] <- ts.sax[which(ts.sax[,1] %in% indices[[i]]),]
     }
   }
 
@@ -229,7 +229,7 @@ STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
 
 
 # Function to plot spatial series
-plot.series <- function(series, label_series = "", label_x = "", label_y = "") {
+plot.series <- function(series, label_series = "", label_x = "", label_y = "", ...) {
   grf <- ggplot(data=series, ggplot2::aes(x = series$x, y = series$value, colour = series$color, group = 1))
   grf <- grf + scale_colour_identity(series$color) + geom_line() + geom_point(data=series, aes(x = series$x, y = series$value), size=0.5) + facet_grid(variable ~ .)
   grf <- grf + xlab(label_x)

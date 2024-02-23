@@ -1,10 +1,10 @@
 ---
 title: "STMotif R Package"
-author: "Heraldo Borges, Amin Bazaz, Esther Pacitti, Eduardo Ogasawara"
+author: "Heraldo Borges, Amin Bazaz, Eduardo Ogasawara"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{STMotif R Package}
+  %\VignetteIndexEntry{Spatial-Time Motif Discovery with STMotif}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   
